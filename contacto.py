@@ -1,1 +1,1 @@
-print("gordo re puto")
+print("hola mundo")
