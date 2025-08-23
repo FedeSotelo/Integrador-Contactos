@@ -1,10 +1,9 @@
-# contacto.py
-
 from grupo import grupos, listar_grupos, crear_grupo_interactivo, buscar_grupo_por_id, next_id
 
-# Cada contacto: [id, nombre, tel1, tel2, correo, idGrupo, anulado]
+# [id, nombre, tel1, tel2, correo, idGrupo, anulado]
 contactos = []
 
+# VER PARA HACER UN LISTADO CON FILTRO DE NOMBRE-CORREO, PARA ACHICAR LA BUSQUEDA
 def validar_correo(c):
     c = c.strip()
     if c == "":
@@ -12,7 +11,6 @@ def validar_correo(c):
     return ("@" in c) and ("." in c)
 
 def _buscar_contacto_index_por_id(cid: int) -> int:
-    """Devuelve el índice del contacto con id=cid o -1 si no existe."""
     i = 0
     while i < len(contactos):
         if contactos[i][0] == cid:
@@ -21,7 +19,6 @@ def _buscar_contacto_index_por_id(cid: int) -> int:
     return -1
 
 def _ingresar_id_contacto() -> int:
-    """Pide un ID numérico usando strip()+isdigit()."""
     while True:
         entrada = input("Ingrese ID de contacto: ").strip()
         if entrada.isdigit():
@@ -29,7 +26,6 @@ def _ingresar_id_contacto() -> int:
         print("ID inválido. Debe ser numérico.")
 
 def _listar_contactos_linea_base(incluir_anulados=False):
-    """Muestra id - nombre (filtra anulados salvo que se indique lo contrario)."""
     hay = False
     for c in contactos:
         if (not c[6]) or incluir_anulados:
@@ -75,26 +71,41 @@ def alta_contacto():
 
     correo = input("Correo (opcional): ").strip()
     while not validar_correo(correo):
-        print("Correo inválido.")
+        print("Correo invalido.")
         correo = input("Correo (opcional): ").strip()
 
     id_grupo = elegir_grupo()
 
     cid = next_id(contactos)
     contactos.append([cid, nombre, tel1, tel2, correo, id_grupo, False])  # anulado=False
-    print("✓ Contacto creado (id=" + str(cid) + ")")
+    print("Contacto creado (id=" + str(cid) + ")")
 
-def listar_contactos_detallado():
-    activos = [c for c in contactos if not c[6]]
+def listar_contactos_detallado(filtro_nombre: str = "", filtro_grupo_desc: str = ""):
+    activos = [c for c in contactos if not c[6]]  # solo activos
     if len(activos) == 0:
         print("No hay contactos cargados.")
         return
 
+    # aplicar filtro por nombre
+    if filtro_nombre.strip() != "":
+        activos = [c for c in activos if filtro_nombre.lower() in c[1].lower()]
+
+    # aplicar filtro por descripción de grupo
+    if filtro_grupo_desc.strip() != "":
+        activos_filtrados = []
+        for c in activos:
+            g = buscar_grupo_por_id(c[5])
+            if g and filtro_grupo_desc.lower() in g[1].lower():
+                activos_filtrados.append(c)
+        activos = activos_filtrados
+
+    if len(activos) == 0:
+        print("No hay contactos que cumplan con el filtro.")
+        return
+
     print("\nID | NOMBRE                | TEL1        | TEL2        | CORREO                 | GRUPO")
     print("---------------------------------------------------------------------------------------------")
-    for c in contactos:
-        if c[6]:  # anulado=True → no mostrar
-            continue
+    for c in activos:
         gid = c[5]
         nombre_grupo = "(sin grupo)"
         g = buscar_grupo_por_id(gid)
@@ -106,6 +117,9 @@ def listar_contactos_detallado():
         t2      = c[3].strip().ljust(12)
         cor     = c[4].strip().ljust(22)
         print(id_txt + " | " + nom + " | " + t1 + " | " + t2 + " | " + cor + " | " + nombre_grupo)
+
+
+
 
 def eliminar_contacto():
     # Baja lógica: anulado=True
@@ -123,14 +137,13 @@ def eliminar_contacto():
         return
 
     nombre = contactos[idx][1]
-    conf = input(f"¿Eliminar (baja lógica) contacto '{nombre}'? (s/n): ").strip().lower()
+    conf = input(f"¿Eliminar (baja logica) contacto '{nombre}'? (s/n): ").strip().lower()
     if conf == "s":
         contactos[idx][6] = True
-        print("✓ Contacto marcado como eliminado (baja lógica).")
+        print("Contacto marcado como eliminado (baja lógica).")
     else:
         print("Operación cancelada.")
 
-# (Opcional) restaurar contacto anulado
 def restaurar_contacto():
     anulados = [c for c in contactos if c[6]]
     if len(anulados) == 0:
@@ -160,7 +173,7 @@ def editar_contacto():
         return
 
     print("\nContactos activos (id - nombre):")
-    # listamos solo activos
+
     hay = False
     for c in contactos:
         if not c[6]:
@@ -176,11 +189,10 @@ def editar_contacto():
         print("No existe un contacto activo con ese ID.")
         return
 
-    # c = [id, nombre, tel1, tel2, correo, idGrupo, anulado]
     c = contactos[idx]
-    print("\nDeje vacío para mantener el valor actual.")
+    print("\nDeje vacio para mantener el valor actual.")
 
-    # nombre
+
     actual_nom = c[1]
     nuevo_nombre = input(f"Nombre ({actual_nom}): ").strip()
     if nuevo_nombre != "":
@@ -189,7 +201,7 @@ def editar_contacto():
             nuevo_nombre = input(f"Nombre ({actual_nom}): ").strip()
         c[1] = nuevo_nombre
 
-    # tel1
+
     actual_t1 = c[2]
     nuevo_tel1 = input(f"Teléfono 1 ({actual_t1}): ").strip()
     if nuevo_tel1 != "":
@@ -198,7 +210,6 @@ def editar_contacto():
             nuevo_tel1 = input(f"Teléfono 1 ({actual_t1}): ").strip()
         c[2] = nuevo_tel1
 
-    # tel2 (opcional)
     actual_t2 = c[3] if c[3] else ""
     nuevo_tel2 = input(f"Telefono 2 ({actual_t2}): ").strip()
     if nuevo_tel2 != "":
@@ -207,12 +218,11 @@ def editar_contacto():
             nuevo_tel2 = input(f"Teléfono 2 ({actual_t2}): ").strip()
         c[3] = nuevo_tel2
 
-    # correo (opcional)
     actual_mail = c[4] if c[4] else ""
     nuevo_correo = input(f"Correo ({actual_mail}): ").strip()
     if nuevo_correo != "":
         while not (("@" in nuevo_correo) and ("." in nuevo_correo)):
-            print("Correo inválido.")
+            print("Correo invalido.")
             nuevo_correo = input(f"Correo ({actual_mail}): ").strip()
         c[4] = nuevo_correo
 

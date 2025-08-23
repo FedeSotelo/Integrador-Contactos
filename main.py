@@ -8,7 +8,8 @@ from grupo import (
     listar_grupos,
     crear_grupo_interactivo,
     eliminar_grupo,      
-    editar_grupo         
+    editar_grupo,
+    buscar_grupo_por_id   
 )
 """ 
 
@@ -19,14 +20,21 @@ from interaccion import (
 def menu_contactos():
     while True:
         print("\n=== CONTACTOS ===")
-        print("1) Despliegue de lista")
+        print("1) Despliegue de lista (con filtros)")
         print("2) Agregar contacto")
         print("3) Eliminar contacto")
         print("4) Editar contacto")
         print("0) Volver")
         op = input("Opción: ").strip()
         if op == "1":
-            listar_contactos_detallado()
+            # --- pedir filtros ---
+            filtro_nombre = input("Filtrar por nombre (enter para todos): ").strip()
+            filtro_grupo_desc = input("Filtrar por grupo (descripción, enter para todos): ").strip()
+            listar_contactos_detallado(
+                filtro_nombre=filtro_nombre,
+                filtro_grupo_desc=filtro_grupo_desc
+            )
+
         elif op == "2":
             alta_contacto()
         elif op == "3":
@@ -59,6 +67,7 @@ def menu_grupos():
             break
         else:
             print("Opción inválida.")
+
 """
 def menu_interacciones():
     while True:
@@ -82,6 +91,7 @@ def menu_interacciones():
         else:
             print("Opción inválida.")
 """
+
 def menu_principal():
     while True:
         print("\n=== MENÚ PRINCIPAL ===")
