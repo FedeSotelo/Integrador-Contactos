@@ -3,14 +3,13 @@ from grupo import grupos, listar_grupos, crear_grupo_interactivo, buscar_grupo_p
 # [id, nombre, tel1, tel2, correo, idGrupo, anulado]
 contactos = []
 
-# VER PARA HACER UN LISTADO CON FILTRO DE NOMBRE-CORREO, PARA ACHICAR LA BUSQUEDA
 def validar_correo(c):
     c = c.strip()
     if c == "":
         return True
     return ("@" in c) and ("." in c)
 
-def _buscar_contacto_index_por_id(cid: int) -> int:
+def _buscar_contacto_index_por_id(cid: int):
     i = 0
     while i < len(contactos):
         if contactos[i][0] == cid:
@@ -18,7 +17,7 @@ def _buscar_contacto_index_por_id(cid: int) -> int:
         i += 1
     return -1
 
-def _ingresar_id_contacto() -> int:
+def _ingresar_id_contacto():
     while True:
         entrada = input("Ingrese ID de contacto: ").strip()
         if entrada.isdigit():
@@ -82,6 +81,7 @@ def alta_contacto():
 
 def listar_contactos_detallado(filtro_nombre: str = "", filtro_grupo_desc: str = ""):
     activos = [c for c in contactos if not c[6]]  # solo activos
+
     if len(activos) == 0:
         print("No hay contactos cargados.")
         return
@@ -111,12 +111,12 @@ def listar_contactos_detallado(filtro_nombre: str = "", filtro_grupo_desc: str =
         g = buscar_grupo_por_id(gid)
         if g:
             nombre_grupo = g[1].strip()
-        id_txt  = str(c[0]).ljust(2)
+        id  = str(c[0]).ljust(2)
         nom     = c[1].strip().ljust(20)
         t1      = c[2].strip().ljust(12)
         t2      = c[3].strip().ljust(12)
         cor     = c[4].strip().ljust(22)
-        print(id_txt + " | " + nom + " | " + t1 + " | " + t2 + " | " + cor + " | " + nombre_grupo)
+        print(id + " | " + nom + " | " + t1 + " | " + t2 + " | " + cor + " | " + nombre_grupo)
 
 
 
@@ -162,9 +162,9 @@ def restaurar_contacto():
     conf = input(f"¿Restaurar contacto '{contactos[idx][1]}'? (s/n): ").strip().lower()
     if conf == "s":
         contactos[idx][6] = False
-        print("✓ Contacto restaurado.")
+        print("Contacto restaurado.")
     else:
-        print("Operación cancelada.")
+        print("Operacion cancelada.")
 
 
 def editar_contacto():
