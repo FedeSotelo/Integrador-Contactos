@@ -82,10 +82,6 @@ def alta_contacto():
 def listar_contactos_detallado(filtro_nombre: str = "", filtro_grupo_desc: str = ""):
     activos = [c for c in contactos if not c[6]]  # solo activos
 
-    if len(activos) == 0:
-        print("No hay contactos cargados.")
-        return
-
     # aplicar filtro por nombre
     if filtro_nombre.strip() != "":
         activos = [c for c in activos if filtro_nombre.lower() in c[1].lower()]
@@ -101,22 +97,23 @@ def listar_contactos_detallado(filtro_nombre: str = "", filtro_grupo_desc: str =
 
     if len(activos) == 0:
         print("No hay contactos que cumplan con el filtro.")
-        return
+    else:
+        print("\nID | NOMBRE                | TEL1        | TEL2        | CORREO                 | GRUPO")
+        print("---------------------------------------------------------------------------------------------")
+        for c in activos:
+            gid = c[5]
+            nombre_grupo = "(sin grupo)"
+            g = buscar_grupo_por_id(gid)
+            if g:
+                nombre_grupo = g[1].strip()
+            id  = str(c[0]).ljust(2)
+            nom = c[1].strip().ljust(20)
+            t1  = c[2].strip().ljust(12)
+            t2  = c[3].strip().ljust(12)
+            cor = c[4].strip().ljust(22)
+            print(id + " | " + nom + " | " + t1 + " | " + t2 + " | " + cor + " | " + nombre_grupo)
 
-    print("\nID | NOMBRE                | TEL1        | TEL2        | CORREO                 | GRUPO")
-    print("---------------------------------------------------------------------------------------------")
-    for c in activos:
-        gid = c[5]
-        nombre_grupo = "(sin grupo)"
-        g = buscar_grupo_por_id(gid)
-        if g:
-            nombre_grupo = g[1].strip()
-        id  = str(c[0]).ljust(2)
-        nom     = c[1].strip().ljust(20)
-        t1      = c[2].strip().ljust(12)
-        t2      = c[3].strip().ljust(12)
-        cor     = c[4].strip().ljust(22)
-        print(id + " | " + nom + " | " + t1 + " | " + t2 + " | " + cor + " | " + nombre_grupo)
+    return activos  # <-- DEVOLVÉ LA LISTA FILTRADA
 
 
 

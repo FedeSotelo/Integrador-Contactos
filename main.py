@@ -29,15 +29,9 @@ from grupo import (
     editar_grupo,
     buscar_grupo_por_id   
 )
+from interacciones import crear_interaccion
 
-"""
-from interaccion import (      
-    listar_interacciones,
-    crear_interaccion,
-    ver_historial_por_contacto,
-    ver_historial_por_grupo
-)
-"""
+
 
 #----------------------------------------------------------------------------------------------
 # FUNCIONES
@@ -96,7 +90,7 @@ def menu_grupos():
             input("Opción inválida. Presione ENTER para continuar.")
 
 
-"""
+
 def menu_interacciones():
     while True:
         print("\n=== INTERACCIONES ===")
@@ -106,19 +100,23 @@ def menu_interacciones():
         print("4) Ver historial por grupo")
         print("0) Volver")
         op = input("Opción: ").strip()
+        """
         if op == "1":
             listar_interacciones()
-        elif op == "2":
+            """
+        if op == "2":
             crear_interaccion()
+            """
         elif op == "3":
             ver_historial_por_contacto()
         elif op == "4":
             ver_historial_por_grupo()
+            """
         elif op == "0":
             break
         else:
             input("Opción inválida. Presione ENTER para continuar.")
-"""
+
 
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
@@ -155,8 +153,7 @@ def main():
         elif opcion == "2":
             menu_grupos()
         elif opcion == "3":
-            print("Interacciones aún no implementadas.")  
-            # menu_interacciones()
+            menu_interacciones()
 
         input("\nPresione ENTER para volver al menú.")
         print("\n\n")
