@@ -29,9 +29,29 @@ from grupo import (
     editar_grupo,
     buscar_grupo_por_id   
 )
-from interacciones import crear_interaccion
+from interacciones import (
+    crear_interaccion,
+    listar_interacciones,
+    editar_interaccion,
+    eliminar_interaccion,
+    restaurar_interaccion,
+    ver_historial_por_contacto,
+    ver_historial_por_grupo
+)
+
+from estadisticas import (
+    cantidad_contactos_por_grupo,
+    promedio_interacciones_por_contacto,
+    porcentaje_contactos_activos
+)
 
 
+from login import login  
+from estadisticas import (
+    cantidad_contactos_por_grupo,
+    promedio_interacciones_por_contacto,
+    porcentaje_contactos_activos
+)
 
 #----------------------------------------------------------------------------------------------
 # FUNCIONES
@@ -87,8 +107,7 @@ def menu_grupos():
         elif op == "0":
             break
         else:
-            input("Opción inválida. Presione ENTER para continuar.")
-
+            input("Opción invalida. Presione ENTER para continuar.")
 
 
 def menu_interacciones():
@@ -96,27 +115,56 @@ def menu_interacciones():
         print("\n=== INTERACCIONES ===")
         print("1) Despliegue de lista")
         print("2) Crear una interacción")
-        print("3) Ver historial por contacto")
-        print("4) Ver historial por grupo")
+        print("3) Editar interacción")
+        print("4) Eliminar interacción")
+        print("5) Restaurar interacción")
+        print("6) Ver historial por contacto")
+        print("7) Ver historial por grupo")
         print("0) Volver")
+        
         op = input("Opción: ").strip()
-        """
+
         if op == "1":
             listar_interacciones()
-            """
-        if op == "2":
+        elif op == "2":
             crear_interaccion()
-            """
         elif op == "3":
-            ver_historial_por_contacto()
+            editar_interaccion()
         elif op == "4":
+            eliminar_interaccion()
+        elif op == "5":
+            restaurar_interaccion()
+        elif op == "6":
+            ver_historial_por_contacto()
+        elif op == "7":
             ver_historial_por_grupo()
-            """
         elif op == "0":
             break
         else:
             input("Opción inválida. Presione ENTER para continuar.")
 
+
+
+def menu_estadisticas():
+    while True:
+        print("\n=== ESTADÍSTICAS ===")
+        print("1) Cantidad de contactos por grupo")
+        print("2) Promedio de interacciones por contacto")
+        print("3) Porcentaje de contactos activos")
+        print("0) Volver")
+
+        op = input("Opción: ").strip()
+
+        if op == "1":
+            cantidad_contactos_por_grupo()
+        elif op == "2":
+            promedio_interacciones_por_contacto()
+        elif op == "3":
+            porcentaje_contactos_activos()
+        elif op == "0":
+            break
+        else:
+            input("Opción inválida. Presione ENTER para continuar.")
 
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
@@ -124,7 +172,7 @@ def menu_interacciones():
 def main():
     while True:
         while True:
-            opciones = 3
+            opciones = 4  # 👈 ahora hay 4
             print()
             print("---------------------------")
             print("MENÚ PRINCIPAL")
@@ -132,6 +180,7 @@ def main():
             print("[1] Gestión de contactos")
             print("[2] Gestión de grupos")
             print("[3] Gestión de interacciones")
+            print("[4] Estadísticas")   # 👈 nuevo
             print("---------------------------")
             print("[0] Salir del programa")
             print("---------------------------")
@@ -147,16 +196,20 @@ def main():
         if opcion == "0":
             print("Saliendo…")
             exit()
-
         elif opcion == "1":
             menu_contactos()
         elif opcion == "2":
             menu_grupos()
         elif opcion == "3":
             menu_interacciones()
+        elif opcion == "4":
+            menu_estadisticas()   # 👈 nuevo
 
         input("\nPresione ENTER para volver al menú.")
         print("\n\n")
 
 
-main()
+if login():
+    main()  
+else:
+    print("Acceso denegado.")
