@@ -6,10 +6,10 @@ def login():
 
     while True: 
         print("=== Login ===")
-        usuario = input("Usuario: ").strip()
+        usuario = input("Usuario: ").strip().lower()
         password = pwinput.pwinput("Contraseña: ", mask="*")
 
-        if usuario == usuario_correcto and password == password_correcto:
+        if usuario == usuario_correcto.lower() and password == password_correcto:
             print("Bienvenido Lio 10")
             return True   
         else:

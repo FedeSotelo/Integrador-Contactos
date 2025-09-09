@@ -171,28 +171,21 @@ def menu_estadisticas():
 #----------------------------------------------------------------------------------------------
 def main():
     while True:
-        while True:
-            opciones = 4  # 👈 ahora hay 4
-            print()
-            print("---------------------------")
-            print("MENÚ PRINCIPAL")
-            print("---------------------------")
-            print("[1] Gestión de contactos")
-            print("[2] Gestión de grupos")
-            print("[3] Gestión de interacciones")
-            print("[4] Estadísticas")   # 👈 nuevo
-            print("---------------------------")
-            print("[0] Salir del programa")
-            print("---------------------------")
-            print()
-            
-            opcion = input("Seleccione una opción: ")
-            if opcion in [str(i) for i in range(0, opciones + 1)]:
-                break
-            else:
-                input("Opcion inválida. Presione ENTER para volver a seleccionar.")
         print()
-
+        print("---------------------------")
+        print("MENÚ PRINCIPAL")
+        print("---------------------------")
+        print("[1] Gestión de contactos")
+        print("[2] Gestión de grupos")
+        print("[3] Gestión de interacciones")
+        print("[4] Estadísticas")
+        print("[5] Cerrar sesión")  
+        print("---------------------------")
+        print("[0] Salir del programa")
+        print("---------------------------")
+        print()
+        
+        opcion = input("Seleccione una opción: ").strip()
         if opcion == "0":
             print("Saliendo…")
             exit()
@@ -203,10 +196,13 @@ def main():
         elif opcion == "3":
             menu_interacciones()
         elif opcion == "4":
-            menu_estadisticas()   # 👈 nuevo
-
-        input("\nPresione ENTER para volver al menú.")
-        print("\n\n")
+            menu_estadisticas()
+        elif opcion == "5":
+            print("Cerrando sesión...\n")
+            if login():   
+                continue
+        else:
+            input("Opción inválida. Presione ENTER para continuar.")
 
 
 if login():

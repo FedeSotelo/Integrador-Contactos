@@ -100,7 +100,7 @@ def listar_contactos_detallado(filtro_nombre: str = "", filtro_grupo_desc: str =
     return activos
 
 def eliminar_contacto():
-    if len(contactos) == 0:
+    if not contactos_dict:
         print("No hay contactos para eliminar.")
         return
 
@@ -108,22 +108,24 @@ def eliminar_contacto():
     _listar_contactos_linea_base(incluir_anulados=False)
 
     cid = _ingresar_id_contacto()
-    idx = _buscar_contacto_index_por_id(cid)
-    if idx == -1 or contactos[idx][6]:
+    contacto = contactos_dict.get(cid)   # 👈 acceso directo O(1)
+
+    if not contacto or contacto[6]:
         print("No existe un contacto activo con ese ID.")
         return
 
-    nombre = contactos[idx][1]
+    nombre = contacto[1]
     if input(f"¿Eliminar contacto '{nombre}'? (s/n): ").strip().lower() == "s":
-        contactos[idx][6] = True
-        contactos_dict[cid][6] = True   
+        contacto[6] = True   # 👈 al modificar acá se modifica también en la lista (misma referencia)
         print("Contacto marcado como eliminado (baja lógica).")
     else:
         print("Operación cancelada.")
 
+
 def restaurar_contacto():
-    anulados = [c for c in contactos if c[6]]
-    if len(anulados) == 0:
+    # obtener todos los anulados desde el diccionario
+    anulados = [c for c in contactos_dict.values() if c[6]]
+    if not anulados:
         print("No hay contactos anulados para restaurar.")
         return
 
@@ -131,17 +133,18 @@ def restaurar_contacto():
     _listar_contactos_linea_base(incluir_anulados=True)
 
     cid = _ingresar_id_contacto()
-    idx = _buscar_contacto_index_por_id(cid)
-    if idx == -1 or not contactos[idx][6]:
+    contacto = contactos_dict.get(cid)   
+
+    if not contacto or not contacto[6]:
         print("No existe un contacto anulado con ese ID.")
         return
 
-    if input(f"¿Restaurar contacto '{contactos[idx][1]}'? (s/n): ").strip().lower() == "s":
-        contactos[idx][6] = False
-        contactos_dict[cid][6] = False
+    if input(f"¿Restaurar contacto '{contacto[1]}'? (s/n): ").strip().lower() == "s":
+        contacto[6] = False 
         print("Contacto restaurado.")
     else:
         print("Operación cancelada.")
+
 
 def editar_contacto():
     if len(contactos) == 0:
