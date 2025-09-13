@@ -1,10 +1,33 @@
 import re
-from grupo import grupos, listar_grupos, crear_grupo_interactivo, buscar_grupo_por_id, next_id
+from grupo import grupos_dict, listar_grupos, crear_grupo_interactivo, buscar_grupo_por_id, next_id
 
 # {id: [id, nombre, tel1, tel2, correo, idGrupo, anulado]}
 contactos_dict = {}
 
 validar_correo = lambda c: (c.strip() == "") or bool(re.fullmatch(r"[^@]+@[^@]+\.[^@]+", c))
+
+
+def obtener_nombre_y_tel(id_contacto):
+    """
+    esto va devolver una tupla (nombre, telefono) del contacto.
+    Si no existe o está anulado, devuelve None.
+    """
+    c = contactos_dict.get(id_contacto)
+    if c and not c[6]:
+        return (c[1], c[2])  # tupla con nombre y tel1
+    return None
+
+def _telefonos_unicos():
+    """
+    Devuelve un conjunto con todos los teléfonos únicos (tel1 y tel2) 
+    de contactos activos (sin anulados).
+    """
+    return {
+        t
+        for c in contactos_dict.values() if not c[6]   # solo contactos activos
+        for t in [c[2], c[3]] if t.strip() != ""       # incluye tel1 y tel2 si no están vacíos
+    }
+
 
 def _ingresar_id_contacto():
     while True:
@@ -21,7 +44,7 @@ _listar_contactos_linea_base = lambda incluir_anulados=False: (
 def elegir_grupo():
     while True:
         listar_grupos()
-        if len(grupos) == 0:
+        if len(grupos_dict) == 0:
             print("No hay grupos, se creará uno.")
             return crear_grupo_interactivo()
 
@@ -48,6 +71,9 @@ def alta_contacto():
         print("El teléfono debe ser numérico y es obligatorio.")
         tel1 = input("Telefono 1 (obligatorio): ").strip()
 
+    if tel1 in _telefonos_unicos():
+        print("⚠ Atención: este teléfono ya existe en otro contacto.")
+
     tel2 = input("Telefono 2 (opcional): ").strip()
     while tel2 != "" and not tel2.isdigit():
         print("El teléfono debe ser numérico o dejar vacío.")
@@ -60,10 +86,13 @@ def alta_contacto():
 
     id_grupo = elegir_grupo()
 
-    cid = next_id(contactos_dict.values())  # 👈 funciona igual
+    cid = max(contactos_dict.keys(), default=0) + 1
+
     nuevo = [cid, nombre, tel1, tel2, correo, id_grupo, False]
     contactos_dict[cid] = nuevo
-    print(f"Contacto creado (id={cid})")
+
+    print(f"✓ Contacto creado con éxito (id={cid})")
+
 
 def listar_contactos_detallado(filtro_nombre: str = "", filtro_grupo_desc: str = ""):
     activos = [c for c in contactos_dict.values() if not c[6]]

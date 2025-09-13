@@ -42,7 +42,9 @@ from interacciones import (
 from estadisticas import (
     cantidad_contactos_por_grupo,
     promedio_interacciones_por_contacto,
-    porcentaje_contactos_activos
+    porcentaje_contactos_activos,
+    contacto_con_mas_y_menos_interacciones,
+    matriz_contactos_por_grupo_y_tipo
 )
 
 
@@ -151,6 +153,8 @@ def menu_estadisticas():
         print("1) Cantidad de contactos por grupo")
         print("2) Promedio de interacciones por contacto")
         print("3) Porcentaje de contactos activos")
+        print("4) Contacto con más y menos interacciones")
+        print("5) Matriz de interacciones por grupo y tipo")   
         print("0) Volver")
 
         op = input("Opción: ").strip()
@@ -161,10 +165,16 @@ def menu_estadisticas():
             promedio_interacciones_por_contacto()
         elif op == "3":
             porcentaje_contactos_activos()
+        elif op == "4":
+            contacto_con_mas_y_menos_interacciones()   
+        elif op == "5":
+            matriz_contactos_por_grupo_y_tipo()        
         elif op == "0":
             break
         else:
             input("Opción inválida. Presione ENTER para continuar.")
+
+
 
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
