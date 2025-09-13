@@ -55,7 +55,7 @@ def contacto_con_mas_y_menos_interacciones():
     contacto_max = contactos_dict.get(max_id)
     contacto_min = contactos_dict.get(min_id)
 
-    print("\nContacto con MÁS interacciones:")
+    print("\nContacto con MAS interacciones:")
     print(f"- {contacto_max[1]} ({conteo[max_id]} interacciones)")
 
     print("\nContacto con MENOS interacciones:")
@@ -64,7 +64,7 @@ def contacto_con_mas_y_menos_interacciones():
 
 def matriz_contactos_por_grupo_y_tipo():
     """
-    Muestra una matriz [grupos x tipos de interacción] con la cantidad de interacciones.
+    Muestra una matriz [grupos x tipos de interaccion] con la cantidad de interacciones.
     Filas = grupos, Columnas = tipos de interacción.
     """
     if not grupos_dict or not interacciones_dict:

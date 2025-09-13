@@ -114,4 +114,4 @@ def editar_grupo():
         g[1] = nuevo_nombre
 
     grupos_dict[gid] = g
-    print("✓ Grupo actualizado.")
+    print("Grupo actualizado.")

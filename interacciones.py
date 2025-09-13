@@ -47,7 +47,7 @@ def crear_interaccion():
 
     iId = next_id(interacciones_dict)
     interacciones_dict[iId] = [iId, idContacto, descripcion, fecha, tipo, False]
-    print("✓ Interacción creada con éxito.")
+    print("Interacción creada con exito.")
 
 
 def listar_interacciones(incluir_anuladas=False):
@@ -88,7 +88,7 @@ def editar_interaccion():
         i[4] = nuevo_tipo
 
     interacciones_dict[iid] = i
-    print("✓ Interacción actualizada.")
+    print("Interacción actualizada.")
 
 
 def eliminar_interaccion():
@@ -101,14 +101,14 @@ def eliminar_interaccion():
     conf = input("¿Eliminar (baja lógica)? (s/n): ").strip().lower()
     if conf == "s":
         interacciones_dict[iid][5] = True
-        print("✓ Interacción eliminada (baja lógica).")
+        print("Interacción eliminada (baja lógica).")
 
 
 def restaurar_interaccion():
     iid = int(input("ID de la interacción a restaurar: ").strip())
     if iid in interacciones_dict and interacciones_dict[iid][5]:
         interacciones_dict[iid][5] = False
-        print("✓ Interacción restaurada.")
+        print("Interacción restaurada.")
 
 
 def ver_historial_por_contacto():
@@ -138,7 +138,7 @@ def ver_historial_por_grupo():
 
     gid = _ingresar_id_grupo()  
     if gid is None:
-        print("ID de grupo inválido.")
+        print("ID de grupo invalido.")
         return
 
     contactos_en_grupo = [c[0] for c in contactos_dict.values() if c[5] == gid and not c[6]]
@@ -167,10 +167,10 @@ def _dias_en_mes(mes: int, anio: int) -> int:
     elif mes == 2:
         return 29 if _es_bisiesto(anio) else 28
     else:
-        return 0   # mes inválido
+        return 0   # mes invalido
     
 def _validar_fecha_completa(fecha: str) -> bool:
-    # Separar por / o -
+    # esto se separa por / o -
     if "/" in fecha:
         partes = fecha.split("/")
     elif "-" in fecha:

@@ -70,7 +70,7 @@ def menu_contactos():
         op = input("Opción: ").strip()
         if op == "1":
             filtro_nombre = input("Filtrar por nombre (enter para todos): ").strip()
-            filtro_grupo_desc = input("Filtrar por grupo (descripción, enter para todos): ").strip()
+            filtro_grupo_desc = input("Filtrar por grupo (descripcion, enter para todos): ").strip()
             listar_contactos_detallado(
                 filtro_nombre=filtro_nombre,
                 filtro_grupo_desc=filtro_grupo_desc
@@ -86,7 +86,7 @@ def menu_contactos():
         elif op == "0":
             break
         else:
-            input("Opción inválida. Presione ENTER para continuar.")
+            input("Opcion invalida. Presione ENTER para continuar.")
 
 
 def menu_grupos():
@@ -97,7 +97,7 @@ def menu_grupos():
         print("3) Eliminar grupo")
         print("4) Editar grupo")
         print("0) Volver")
-        op = input("Opción: ").strip()
+        op = input("Opcion: ").strip()
         if op == "1":
             listar_grupos()
         elif op == "2":
@@ -109,7 +109,7 @@ def menu_grupos():
         elif op == "0":
             break
         else:
-            input("Opción invalida. Presione ENTER para continuar.")
+            input("Opcion invalida. Presione ENTER para continuar.")
 
 
 def menu_interacciones():
@@ -143,13 +143,13 @@ def menu_interacciones():
         elif op == "0":
             break
         else:
-            input("Opción inválida. Presione ENTER para continuar.")
+            input("Opcion invalida. Presione ENTER para continuar.")
 
 
 
 def menu_estadisticas():
     while True:
-        print("\n=== ESTADÍSTICAS ===")
+        print("\n=== ESTADISTICAS ===")
         print("1) Cantidad de contactos por grupo")
         print("2) Promedio de interacciones por contacto")
         print("3) Porcentaje de contactos activos")
@@ -157,7 +157,7 @@ def menu_estadisticas():
         print("5) Matriz de interacciones por grupo y tipo")   
         print("0) Volver")
 
-        op = input("Opción: ").strip()
+        op = input("Opcion: ").strip()
 
         if op == "1":
             cantidad_contactos_por_grupo()
@@ -172,7 +172,7 @@ def menu_estadisticas():
         elif op == "0":
             break
         else:
-            input("Opción inválida. Presione ENTER para continuar.")
+            input("Opcion invalida. Presione ENTER para continuar.")
 
 
 
@@ -188,14 +188,14 @@ def main():
         print("[1] Gestión de contactos")
         print("[2] Gestión de grupos")
         print("[3] Gestión de interacciones")
-        print("[4] Estadísticas")
+        print("[4] Estadisticas")
         print("[5] Cerrar sesión")  
         print("---------------------------")
         print("[0] Salir del programa")
         print("---------------------------")
         print()
         
-        opcion = input("Seleccione una opción: ").strip()
+        opcion = input("Seleccione una opcion: ").strip()
         if opcion == "0":
             print("Saliendo…")
             exit()
@@ -212,7 +212,7 @@ def main():
             if login():   
                 continue
         else:
-            input("Opción inválida. Presione ENTER para continuar.")
+            input("Opcion invalida. Presione ENTER para continuar.")
 
 
 if login():

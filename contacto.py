@@ -10,7 +10,7 @@ validar_correo = lambda c: (c.strip() == "") or bool(re.fullmatch(r"[^@]+@[^@]+\
 def obtener_nombre_y_tel(id_contacto):
     """
     esto va devolver una tupla (nombre, telefono) del contacto.
-    Si no existe o está anulado, devuelve None.
+    Si no existe o esta anulado, devuelve none.
     """
     c = contactos_dict.get(id_contacto)
     if c and not c[6]:
@@ -19,7 +19,7 @@ def obtener_nombre_y_tel(id_contacto):
 
 def _telefonos_unicos():
     """
-    Devuelve un conjunto con todos los teléfonos únicos (tel1 y tel2) 
+    Devuelve un conjunto con todos los telefonos unicos (tel1 y tel2) 
     de contactos activos (sin anulados).
     """
     return {
@@ -34,7 +34,7 @@ def _ingresar_id_contacto():
         entrada = input("Ingrese ID de contacto: ").strip()
         if entrada.isdigit():
             return int(entrada)
-        print("ID inválido. Debe ser numérico.")
+        print("ID invalido. Debe ser numerico.")
 
 _listar_contactos_linea_base = lambda incluir_anulados=False: (
     print("\n".join([f"{str(c[0]).ljust(3)} - {c[1]}" for c in contactos_dict.values() if (not c[6]) or incluir_anulados]))
@@ -45,7 +45,7 @@ def elegir_grupo():
     while True:
         listar_grupos()
         if len(grupos_dict) == 0:
-            print("No hay grupos, se creará uno.")
+            print("No hay grupos, se creara uno.")
             return crear_grupo_interactivo()
 
         print("0: Crear grupo nuevo")
@@ -57,7 +57,7 @@ def elegir_grupo():
             g = buscar_grupo_por_id(val)
             if g:
                 return val
-        print("Opción inválida.")
+        print("Opcion invalida.")
 
 def alta_contacto():
     print("\n=== Alta de contacto ===")
@@ -68,20 +68,20 @@ def alta_contacto():
 
     tel1 = input("Telefono 1: ").strip()
     while tel1 == "" or not tel1.isdigit():
-        print("El teléfono debe ser numérico y es obligatorio.")
+        print("El telefono debe ser numerico y es obligatorio.")
         tel1 = input("Telefono 1 (obligatorio): ").strip()
 
     if tel1 in _telefonos_unicos():
-        print("⚠ Atención: este teléfono ya existe en otro contacto.")
+        print("Este telefono ya existe en otro contacto.")
 
     tel2 = input("Telefono 2 (opcional): ").strip()
     while tel2 != "" and not tel2.isdigit():
-        print("El teléfono debe ser numérico o dejar vacío.")
+        print("El telefono debe ser numerico o dejar vacío.")
         tel2 = input("Telefono 2 (opcional): ").strip()
 
     correo = input("Correo (opcional): ").strip()
     while not validar_correo(correo):
-        print("Correo inválido.")
+        print("Correo invalido.")
         correo = input("Correo (opcional): ").strip()
 
     id_grupo = elegir_grupo()
@@ -91,7 +91,7 @@ def alta_contacto():
     nuevo = [cid, nombre, tel1, tel2, correo, id_grupo, False]
     contactos_dict[cid] = nuevo
 
-    print(f"✓ Contacto creado con éxito (id={cid})")
+    print(f"Contacto creado con exito (id={cid})")
 
 
 def listar_contactos_detallado(filtro_nombre: str = "", filtro_grupo_desc: str = ""):
@@ -176,7 +176,7 @@ def editar_contacto():
         print("No existe un contacto activo con ese ID.")
         return
 
-    print("\nDeje vacío para mantener el valor actual.")
+    print("\nDeje vacio para mantener el valor actual.")
 
     campos = [
         (1, f"Nombre ({contacto[1]}): "),
