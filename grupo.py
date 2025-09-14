@@ -66,11 +66,11 @@ def eliminar_grupo():
         return
 
     nombre = grupos_dict[gid][1]
-    if input(f"¿Eliminar (baja lógica) grupo '{nombre}'? (s/n): ").strip().lower() == "s":
+    if input(f"¿Eliminar (baja logica) grupo '{nombre}'? (s/n): ").strip().lower() == "s":
         grupos_dict[gid][2] = True
         print("Grupo marcado como eliminado (baja logica).")
     else:
-        print("Operación cancelada.")
+        print("Operacion cancelada.")
 
 
 def restaurar_grupo():
@@ -89,7 +89,7 @@ def restaurar_grupo():
         grupos_dict[gid][2] = False
         print("Grupo restaurado.")
     else:
-        print("Operación cancelada.")
+        print("Operacion cancelada.")
 
 
 def editar_grupo():

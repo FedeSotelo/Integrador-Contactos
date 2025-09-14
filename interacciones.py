@@ -3,7 +3,7 @@ from grupo import buscar_grupo_por_id, listar_grupos, _ingresar_id_grupo
 # Diccionario único: {id: [id, idContacto, descripcion, fecha, tipo, anulado]}
 interacciones_dict = {}
 
-tipos_interaccion = ["llamada", "mensaje", "email", "reunión", "videollamada", "otro"]
+tipos_interaccion = ["llamada", "mensaje", "email", "reunion", "videollamada", "otro"]
 
 next_id = lambda d: 1 if len(d) == 0 else max(d.keys()) + 1
 
@@ -33,21 +33,21 @@ def crear_interaccion():
     if idContacto is None:
         return
 
-    descripcion = input("Descripción: ").strip()
+    descripcion = input("Descripcion: ").strip()
     fecha = input("Fecha (DD/MM/AAAA): ").strip()
     while not _validar_fecha_completa(fecha):
-        print("Fecha inválida. Ingresá una en formato válido (DD/MM/AAAA o DD-MM-AAAA).")
+        print("Fecha invalida. Ingresa una en formato valido (DD/MM/AAAA o DD-MM-AAAA).")
         fecha = input("Fecha (DD/MM/AAAA): ").strip()
 
 
-    tipo = input(f"Tipo de interacción ({', '.join(tipos_interaccion)}): ").strip().lower()
+    tipo = input(f"Tipo de interaccion ({', '.join(tipos_interaccion)}): ").strip().lower()
     while tipo not in tipos_interaccion:
-        print("Tipo de interacción no válido.")
-        tipo = input(f"Tipo de interacción ({', '.join(tipos_interaccion)}): ").strip().lower()
+        print("Tipo de interaccion no valido.")
+        tipo = input(f"Tipo de interaccion ({', '.join(tipos_interaccion)}): ").strip().lower()
 
     iId = next_id(interacciones_dict)
     interacciones_dict[iId] = [iId, idContacto, descripcion, fecha, tipo, False]
-    print("Interacción creada con exito.")
+    print("Interaccion creada con exito.")
 
 
 def listar_interacciones(incluir_anuladas=False):
@@ -69,13 +69,13 @@ def listar_interacciones(incluir_anuladas=False):
 
 def editar_interaccion():
     listar_interacciones()
-    iid = int(input("ID de la interacción a editar: ").strip())
+    iid = int(input("ID de la interaccion a editar: ").strip())
     if iid not in interacciones_dict or interacciones_dict[iid][5]:
-        print("No existe interacción activa con ese ID.")
+        print("No existe interaccion activa con ese ID.")
         return
 
     i = interacciones_dict[iid]
-    nueva_desc = input(f"Descripción ({i[2]}): ").strip()
+    nueva_desc = input(f"Descripcion ({i[2]}): ").strip()
     if nueva_desc != "":
         i[2] = nueva_desc
 
@@ -88,27 +88,27 @@ def editar_interaccion():
         i[4] = nuevo_tipo
 
     interacciones_dict[iid] = i
-    print("Interacción actualizada.")
+    print("Interaccion actualizada.")
 
 
 def eliminar_interaccion():
     listar_interacciones()
-    iid = int(input("ID de la interacción a eliminar: ").strip())
+    iid = int(input("ID de la interaccion a eliminar: ").strip())
     if iid not in interacciones_dict or interacciones_dict[iid][5]:
-        print("No existe interacción activa con ese ID.")
+        print("No existe interaccion activa con ese ID.")
         return
 
-    conf = input("¿Eliminar (baja lógica)? (s/n): ").strip().lower()
+    conf = input("¿Eliminar (baja logica)? (s/n): ").strip().lower()
     if conf == "s":
         interacciones_dict[iid][5] = True
-        print("Interacción eliminada (baja lógica).")
+        print("Interaccion eliminada (baja logica).")
 
 
 def restaurar_interaccion():
-    iid = int(input("ID de la interacción a restaurar: ").strip())
+    iid = int(input("ID de la interaccion a restaurar: ").strip())
     if iid in interacciones_dict and interacciones_dict[iid][5]:
         interacciones_dict[iid][5] = False
-        print("Interacción restaurada.")
+        print("Interaccion restaurada.")
 
 
 def ver_historial_por_contacto():
@@ -170,7 +170,6 @@ def _dias_en_mes(mes: int, anio: int) -> int:
         return 0   # mes invalido
     
 def _validar_fecha_completa(fecha: str) -> bool:
-    # esto se separa por / o -
     if "/" in fecha:
         partes = fecha.split("/")
     elif "-" in fecha:

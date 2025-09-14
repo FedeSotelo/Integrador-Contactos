@@ -65,7 +65,7 @@ def contacto_con_mas_y_menos_interacciones():
 def matriz_contactos_por_grupo_y_tipo():
     """
     Muestra una matriz [grupos x tipos de interaccion] con la cantidad de interacciones.
-    Filas = grupos, Columnas = tipos de interacción.
+    Filas = grupos, Columnas = tipos de interaccion.
     """
     if not grupos_dict or not interacciones_dict:
         print("\nNo hay datos suficientes para generar la matriz.")
