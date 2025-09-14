@@ -68,7 +68,7 @@ def eliminar_grupo():
     nombre = grupos_dict[gid][1]
     if input(f"¿Eliminar (baja lógica) grupo '{nombre}'? (s/n): ").strip().lower() == "s":
         grupos_dict[gid][2] = True
-        print("Grupo marcado como eliminado (baja lógica).")
+        print("Grupo marcado como eliminado (baja logica).")
     else:
         print("Operación cancelada.")
 
@@ -109,7 +109,7 @@ def editar_grupo():
     if nuevo_nombre != "":
         while nuevo_nombre == "" or not nuevo_nombre.replace(" ", "").isalpha() or \
               existe_grupo_por_nombre(nuevo_nombre, ignorar_id=g[0]):
-            print("✗ Nombre inválido o duplicado.")
+            print("Nombre inválido o duplicado.")
             nuevo_nombre = input(f"Nombre ({actual_nom}): ").strip()
         g[1] = nuevo_nombre
 

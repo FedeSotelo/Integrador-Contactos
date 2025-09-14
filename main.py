@@ -4,8 +4,8 @@ Título: Gestor de Contactos
 Fecha: 25/08/2025
 Autor:  ramiro balmaceda, santino pota, santiago ruiz, Federico sotelo, luka subotovksy,
 
-Descripción:
-Sistema de gestión de contactos, grupos e interacciones con menús navegables.
+Descripcion:
+Sistema de gestion de contactos, grupos e interacciones con menus navegables.
 
 Pendientes:
 
@@ -13,7 +13,7 @@ Pendientes:
 """
 
 #----------------------------------------------------------------------------------------------
-# MÓDULOS
+# MODULOS
 #----------------------------------------------------------------------------------------------
 from contacto import (
     listar_contactos_detallado,
@@ -67,7 +67,7 @@ def menu_contactos():
         print("4) Editar contacto")
         print("5) Restaurar contacto")
         print("0) Volver")
-        op = input("Opción: ").strip()
+        op = input("Opcion: ").strip()
         if op == "1":
             filtro_nombre = input("Filtrar por nombre (enter para todos): ").strip()
             filtro_grupo_desc = input("Filtrar por grupo (descripcion, enter para todos): ").strip()
@@ -116,15 +116,15 @@ def menu_interacciones():
     while True:
         print("\n=== INTERACCIONES ===")
         print("1) Despliegue de lista")
-        print("2) Crear una interacción")
-        print("3) Editar interacción")
-        print("4) Eliminar interacción")
-        print("5) Restaurar interacción")
+        print("2) Crear una interaccion")
+        print("3) Editar interaccion")
+        print("4) Eliminar interaccion")
+        print("5) Restaurar interaccion")
         print("6) Ver historial por contacto")
         print("7) Ver historial por grupo")
         print("0) Volver")
-        
-        op = input("Opción: ").strip()
+
+        op = input("Opcion: ").strip()
 
         if op == "1":
             listar_interacciones()
@@ -153,7 +153,7 @@ def menu_estadisticas():
         print("1) Cantidad de contactos por grupo")
         print("2) Promedio de interacciones por contacto")
         print("3) Porcentaje de contactos activos")
-        print("4) Contacto con más y menos interacciones")
+        print("4) Contacto con mas y menos interacciones")
         print("5) Matriz de interacciones por grupo y tipo")   
         print("0) Volver")
 
@@ -185,11 +185,11 @@ def main():
         print("---------------------------")
         print("MENÚ PRINCIPAL")
         print("---------------------------")
-        print("[1] Gestión de contactos")
-        print("[2] Gestión de grupos")
-        print("[3] Gestión de interacciones")
+        print("[1] Gestion de contactos")
+        print("[2] Gestion de grupos")
+        print("[3] Gestion de interacciones")
         print("[4] Estadisticas")
-        print("[5] Cerrar sesión")  
+        print("[5] Cerrar sesion")
         print("---------------------------")
         print("[0] Salir del programa")
         print("---------------------------")
@@ -208,7 +208,7 @@ def main():
         elif opcion == "4":
             menu_estadisticas()
         elif opcion == "5":
-            print("Cerrando sesión...\n")
+            print("Cerrando sesion...\n")
             if login():   
                 continue
         else:

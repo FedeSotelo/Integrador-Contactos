@@ -135,9 +135,9 @@ def eliminar_contacto():
 
     if input(f"¿Eliminar contacto '{contacto[1]}'? (s/n): ").strip().lower() == "s":
         contacto[6] = True
-        print("Contacto marcado como eliminado (baja lógica).")
+        print("Contacto marcado como eliminado (baja logica).")
     else:
-        print("Operación cancelada.")
+        print("Operacion cancelada.")
 
 def restaurar_contacto():
     anulados = [c for c in contactos_dict.values() if c[6]]
@@ -159,7 +159,7 @@ def restaurar_contacto():
         contacto[6] = False
         print("Contacto restaurado.")
     else:
-        print("Operación cancelada.")
+        print("Operacion cancelada.")
 
 def editar_contacto():
     if not contactos_dict:
