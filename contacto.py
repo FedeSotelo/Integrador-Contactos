@@ -4,7 +4,8 @@ from grupo import grupos_dict, listar_grupos, crear_grupo_interactivo, buscar_gr
 # {id: [id, nombre, tel1, tel2, correo, idGrupo, anulado]}
 contactos_dict = {}
 
-validar_correo = lambda c: (c.strip() == "") or bool(re.fullmatch(r"[^@]+@[^@]+\.[^@]+", c))
+def validar_correo(c: str) -> bool:
+    return (c.strip() == "") or bool(re.match(r"[^@]+@[^@]+\.[^@]+", c))
 
 
 def obtener_nombre_y_tel(id_contacto):
@@ -36,10 +37,14 @@ def _ingresar_id_contacto():
             return int(entrada)
         print("ID invalido. Debe ser numerico.")
 
-_listar_contactos_linea_base = lambda incluir_anulados=False: (
-    print("\n".join([f"{str(c[0]).ljust(3)} - {c[1]}" for c in contactos_dict.values() if (not c[6]) or incluir_anulados]))
-    if any((not c[6]) or incluir_anulados for c in contactos_dict.values()) else print("(no hay contactos a mostrar)")
-)
+def _listar_contactos_linea_base(incluir_anulados: bool = False):
+    filtrados = filter(lambda c: (not c[6]) or incluir_anulados, contactos_dict.values())
+    ordenados = sorted(filtrados, key=lambda c: c[0])   # orden por ID
+    if len(ordenados) > 0:
+        lineas = map(lambda c: f"{str(c[0]).ljust(3)} - {c[1]}", ordenados)
+        print("\n".join(lineas))
+    else:
+        print("(no hay contactos a mostrar)")
 
 def elegir_grupo():
     while True:

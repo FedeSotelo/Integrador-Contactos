@@ -1,14 +1,37 @@
 # {id: [id, nombre, anulado]}
 grupos_dict = {}
 
-next_id = lambda d: 1 if not d else max(d.keys()) + 1
+from functools import reduce
+
+def next_id(d: dict) -> int:
+    if not d:
+        return 1
+    return reduce(lambda a, b: a if a > b else b, d.keys()) + 1
 
 buscar_grupo_por_id = lambda gid: grupos_dict.get(gid, None)
 
-existe_grupo_por_nombre = lambda nombre, ignorar_id=None: any(
-    (not g[2]) and g[1].strip().lower() == nombre.strip().lower() and (ignorar_id is None or g[0] != ignorar_id)
-    for g in grupos_dict.values()
-)
+def existe_grupo_por_nombre(nombre: str, ignorar_id=None) -> bool:
+    """
+    Devuelve True si ya existe un grupo activo con ese nombre.
+    No usa any(), solo filter + reduce.
+    """
+    candidatos = filter(
+        lambda g: (not g[2]) and g[1].strip().lower() == nombre.strip().lower()
+        and (ignorar_id is None or g[0] != ignorar_id),
+        grupos_dict.values()
+    )
+
+    # reducimos a un contador
+    return reduce(lambda acc, _: acc + 1, candidatos, 0) > 0
+
+from functools import reduce
+
+def next_id(d: dict) -> int:
+    if not d:
+        return 1
+    
+    return reduce(lambda a, b: a if a > b else b, d.keys()) + 1
+
 
 def _ingresar_id_grupo():
     entrada = input("Ingrese ID de grupo: ").strip()

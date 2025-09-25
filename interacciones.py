@@ -5,7 +5,13 @@ interacciones_dict = {}
 
 tipos_interaccion = ["llamada", "mensaje", "email", "reunion", "videollamada", "otro"]
 
-next_id = lambda d: 1 if len(d) == 0 else max(d.keys()) + 1
+from functools import reduce
+
+def next_id(d: dict) -> int:
+    if not d:
+        return 1
+    return reduce(lambda a, b: a if a > b else b, d.keys()) + 1
+
 
 
 # =====================================================
