@@ -111,14 +111,12 @@ def listar_contactos_detallado(filtro_nombre: str = "", filtro_grupo_desc: str =
     if not activos:
         print("No hay contactos que cumplan con el filtro.")
     else:
-        print("\nID | NOMBRE                | TEL1        | TEL2        | CORREO                 | GRUPO")
+        print("\nID | NOMBRE                | TEL1        | TEL2         | CORREO                         | GRUPO")
         print("---------------------------------------------------------------------------------------------")
         for c in activos:
             gid = c[5]
             nombre_grupo = "(sin grupo)"
 
-
-            
             g = buscar_grupo_por_id(gid)
             if g:
                 nombre_grupo = g[1].strip()
