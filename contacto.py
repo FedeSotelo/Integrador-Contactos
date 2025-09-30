@@ -116,6 +116,8 @@ def listar_contactos_detallado(filtro_nombre: str = "", filtro_grupo_desc: str =
         for c in activos:
             gid = c[5]
             nombre_grupo = "(sin grupo)"
+
+
             
             g = buscar_grupo_por_id(gid)
             if g:
