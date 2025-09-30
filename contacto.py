@@ -116,10 +116,11 @@ def listar_contactos_detallado(filtro_nombre: str = "", filtro_grupo_desc: str =
         for c in activos:
             gid = c[5]
             nombre_grupo = "(sin grupo)"
+            
             g = buscar_grupo_por_id(gid)
             if g:
                 nombre_grupo = g[1].strip()
-            print(f"{str(c[0]).ljust(2)} | {c[1].strip().ljust(20)} | {c[2].strip().ljust(12)} | {c[3].strip().ljust(12)} | {c[4].strip().ljust(22)} | {nombre_grupo}")
+            print(f"{str(c[0]).ljust(2)} | {c[1].strip().ljust(20)} | {c[2].strip().ljust(12)} | {c[3].strip().ljust(12)} | {c[4].strip().ljust(30)} | {nombre_grupo}")
 
     return activos
 
