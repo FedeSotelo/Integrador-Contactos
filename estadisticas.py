@@ -95,4 +95,4 @@ def matriz_contactos_por_grupo_y_tipo():
     while k < len(matriz):
         fila = matriz[k]
         print(fila[0].ljust(15) + " | " + " | ".join(str(x).ljust(12) for x in fila[1:]))
-        k += 1
+        k += 1 

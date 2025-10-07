@@ -32,10 +32,11 @@ def _telefonos_unicos():
 
 def _ingresar_id_contacto():
     while True:
-        entrada = input("Ingrese ID de contacto: ").strip()
-        if entrada.isdigit():
-            return int(entrada)
-        print("ID invalido. Debe ser numerico.")
+        try:
+            entrada = int(input("Ingrese ID de contacto: ").strip())
+            return entrada
+        except ValueError:
+            print("ID inválido. Debe ser numérico.")
 
 def _listar_contactos_linea_base(incluir_anulados: bool = False):
     filtrados = filter(lambda c: (not c[6]) or incluir_anulados, contactos_dict.values())
