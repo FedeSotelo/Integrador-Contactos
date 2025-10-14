@@ -1,6 +1,6 @@
 import re
 from grupo import grupos_dict, listar_grupos, crear_grupo_interactivo, buscar_grupo_por_id, next_id
-
+from archivo import guardar_contacto
 # {id: [id, nombre, tel1, tel2, correo, idGrupo, anulado]}
 contactos_dict = {}
 
@@ -93,11 +93,12 @@ def alta_contacto():
     id_grupo = elegir_grupo()
 
     cid = max(contactos_dict.keys(), default=0) + 1
-
     nuevo = [cid, nombre, tel1, tel2, correo, id_grupo, False]
     contactos_dict[cid] = nuevo
 
     print(f"Contacto creado con exito (id={cid})")
+
+    guardar_contacto(nuevo)
 
 
 def listar_contactos_detallado(filtro_nombre: str = "", filtro_grupo_desc: str = ""):
