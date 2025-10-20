@@ -1,6 +1,6 @@
 # {id: [id, nombre, anulado]}
 grupos_dict = {}
-
+from archivo import agregar_datosGrupo;
 from functools import reduce
 
 def next_id(d: dict) -> int:
@@ -74,6 +74,13 @@ def crear_grupo_interactivo():
     nuevo = [gid, nombre, False]
     grupos_dict[gid] = nuevo
     print(f"Grupo creado (id={gid})")
+    nuevo_grupo = {
+        "id": gid,
+        "nombre": nombre,
+        "anulado": not nuevo[2]
+    }
+
+    agregar_datosGrupo(nuevo_grupo)
     return gid
 
 

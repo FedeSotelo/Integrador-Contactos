@@ -1,6 +1,6 @@
 import re
 from grupo import grupos_dict, listar_grupos, crear_grupo_interactivo, buscar_grupo_por_id, next_id
-from archivo import guardar_contacto
+from archivo import agregar_datosContacto, baja_contacto;
 # {id: [id, nombre, tel1, tel2, correo, idGrupo, anulado]}
 contactos_dict = {}
 
@@ -98,8 +98,18 @@ def alta_contacto():
 
     print(f"Contacto creado con exito (id={cid})")
 
-    guardar_contacto(nuevo)
+    # Convertir la lista a diccionario para guardar en JSON
+    nuevo_contacto = {
+        "id": cid,
+        "nombre": nombre,
+        "tel1": tel1,
+        "tel2": tel2,
+        "correo": correo,
+        "id_grupo": id_grupo,
+        "activo": not nuevo[6]
+    }
 
+    agregar_datosContacto(nuevo_contacto)
 
 def listar_contactos_detallado(filtro_nombre: str = "", filtro_grupo_desc: str = ""):
     activos = [c for c in contactos_dict.values() if not c[6]]
@@ -143,9 +153,12 @@ def eliminar_contacto():
 
     if input(f"¿Eliminar contacto '{contacto[1]}'? (s/n): ").strip().lower() == "s":
         contacto[6] = True
-        print("Contacto marcado como eliminado (baja logica).")
+        print("Contacto marcado como eliminado (baja lógica).")
+        baja_contacto() 
     else:
-        print("Operacion cancelada.")
+        print("Operación cancelada.")
+
+
 
 def restaurar_contacto():
     anulados = [c for c in contactos_dict.values() if c[6]]
