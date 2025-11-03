@@ -2,7 +2,6 @@ from contacto import contactos_dict, listar_contactos_detallado, obtener_nombre_
 from grupo import buscar_grupo_por_id, listar_grupos, _ingresar_id_grupo
 # Diccionario único: {id: [id, idContacto, descripcion, fecha, tipo, anulado]}
 interacciones_dict = {}
-
 tipos_interaccion = ["llamada", "mensaje", "email", "reunion", "videollamada", "otro"]
 
 from functools import reduce
