@@ -1,11 +1,18 @@
+import pytest
 from contacto import validar_correo
 from grupo import grupos_dict, eliminar_grupo
 from interacciones import _dias_en_mes
 
-def test_validar_correo():
-    assert validar_correo("persona@mail.com") == True
-    assert validar_correo("") == True
-    assert validar_correo("correo-malo") == False
+@pytest.mark.parametrize(
+    "correo, esperado",
+    [
+        ("persona@mail.com", True),   # correo válido
+        ("", True),                   # vacío permitido por tu función
+        ("correo-malo", False),       # sin @ → inválido
+    ]
+)
+def test_validar_correo(correo, esperado):
+    assert validar_correo(correo) == esperado
 
 def test_eliminar_grupo_inexistente():
     grupos_dict.clear()
