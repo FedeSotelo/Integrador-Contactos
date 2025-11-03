@@ -78,7 +78,7 @@ def alta_contacto():
         tel1 = input("Telefono 1 (obligatorio): ").strip()
 
     if tel1 in _telefonos_unicos():
-        print("Este telefono ya existe en otro contacto.")
+        raise ValueError(f"El teléfono {tel1} ya existe en otro contacto activo.")
 
     tel2 = input("Telefono 2 (opcional): ").strip()
     while tel2 != "" and not tel2.isdigit():
