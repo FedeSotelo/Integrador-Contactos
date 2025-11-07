@@ -36,7 +36,11 @@ from interacciones import (
     eliminar_interaccion,
     restaurar_interaccion,
     ver_historial_por_contacto,
-    ver_historial_por_grupo
+    ver_historial_por_grupo,
+    listar_tipos,
+    alta_tipo,
+    baja_tipo,
+    modificar_tipo
 )
 
 from estadisticas import (
@@ -69,8 +73,8 @@ def menu_contactos():
         print("0) Volver")
         op = input("Opcion: ").strip()
         if op == "1":
-            filtro_nombre = input("Filtrar por nombre (enter para todos): ").strip()
-            filtro_grupo_desc = input("Filtrar por grupo (descripcion, enter para todos): ").strip()
+            filtro_nombre = input("Filtrar por nombre (enter para todos): ")
+            filtro_grupo_desc = input("Filtrar por grupo (descripcion, enter para todos): ")
             listar_contactos_detallado(
                 filtro_nombre=filtro_nombre,
                 filtro_grupo_desc=filtro_grupo_desc
@@ -116,16 +120,16 @@ def menu_interacciones():
     while True:
         print("\n=== INTERACCIONES ===")
         print("1) Despliegue de lista")
-        print("2) Crear una interaccion")
-        print("3) Editar interaccion")
-        print("4) Eliminar interaccion")
-        print("5) Restaurar interaccion")
+        print("2) Crear una interacción")
+        print("3) Editar interacción")
+        print("4) Eliminar interacción")
+        print("5) Restaurar interacción")
         print("6) Ver historial por contacto")
         print("7) Ver historial por grupo")
+        print("8) Tipos de interacción")  # <- agregá esta línea
         print("0) Volver")
 
-        op = input("Opcion: ").strip()
-
+        op = input("Opción: ").strip()
         if op == "1":
             listar_interacciones()
         elif op == "2":
@@ -140,11 +144,36 @@ def menu_interacciones():
             ver_historial_por_contacto()
         elif op == "7":
             ver_historial_por_grupo()
+        elif op == "8":
+            menu_tipos() 
         elif op == "0":
             break
         else:
-            input("Opcion invalida. Presione ENTER para continuar.")
+            input("Opción inválida. Presione ENTER para continuar.")
 
+def menu_tipos():
+    while True:
+        print("\n=== TIPOS DE INTERACCIÓN ===")
+        print("1) Listar tipos")
+        print("2) Agregar tipo")
+        print("3) Modificar tipo")
+        print("4) Eliminar tipo")
+        print("0) Volver")
+
+        op = input("Opción: ").strip()
+
+        if op == "1":
+            listar_tipos()
+        elif op == "2":
+            alta_tipo()
+        elif op == "3":
+            modificar_tipo()
+        elif op == "4":
+            baja_tipo()
+        elif op == "0":
+            break
+        else:
+            input("Opción inválida. Presione ENTER para continuar.")
 
 
 def menu_estadisticas():

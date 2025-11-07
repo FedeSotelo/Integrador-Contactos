@@ -1,223 +1,302 @@
 import re
-from grupo import grupos_dict, listar_grupos, crear_grupo_interactivo, buscar_grupo_por_id, next_id
-from archivo import agregar_datosContacto, baja_contacto;
-# {id: [id, nombre, tel1, tel2, correo, idGrupo, anulado]}
-contactos_dict = {}
+from grupo import  listar_grupos, crear_grupo_interactivo
+from archivo import agregar_datosContacto, RUTA_ARCHIVO_CONTACTO, RUTA_ARCHIVO_GRUPO, baja_contacto, modificar_contacto, telefonos_unicos;
+import json, os
+from functools import reduce
 
 def validar_correo(c: str) -> bool:
     return (c.strip() == "") or bool(re.match(r"[^@]+@[^@]+\.[^@]+", c))
 
-
-def obtener_nombre_y_tel(id_contacto):
-    """
-    esto va devolver una tupla (nombre, telefono) del contacto.
-    Si no existe o esta anulado, devuelve none.
-    """
-    c = contactos_dict.get(id_contacto)
-    if c and not c[6]:
-        return (c[1], c[2])  # tupla con nombre y tel1
-    return None
-
 def _telefonos_unicos():
-    """
-    Devuelve un conjunto con todos los telefonos unicos (tel1 y tel2) 
-    de contactos activos (sin anulados).
-    """
-    return {
-        t
-        for c in contactos_dict.values() if not c[6]   # solo contactos activos
-        for t in [c[2], c[3]] if t.strip() != ""       # incluye tel1 y tel2 si no están vacíos
-    }
-
-
-def _ingresar_id_contacto():
-    while True:
-        try:
-            entrada = int(input("Ingrese ID de contacto: ").strip())
-            return entrada
-        except ValueError:
-            print("ID inválido. Debe ser numérico.")
-
-def _listar_contactos_linea_base(incluir_anulados: bool = False):
-    filtrados = filter(lambda c: (not c[6]) or incluir_anulados, contactos_dict.values())
-    ordenados = sorted(filtrados, key=lambda c: c[0])   # orden por ID
-    if len(ordenados) > 0:
-        lineas = map(lambda c: f"{str(c[0]).ljust(3)} - {c[1]}", ordenados)
-        print("\n".join(lineas))
-    else:
-        print("(no hay contactos a mostrar)")
+    return telefonos_unicos()
 
 def elegir_grupo():
+    """
+    Permite al usuario elegir un grupo existente o crear uno nuevo.
+    Lee los grupos desde el archivo JSON.
+    """
     while True:
+        print("\n=== Selección de grupo ===")
+
         listar_grupos()
-        if len(grupos_dict) == 0:
-            print("No hay grupos, se creara uno.")
+
+        if not os.path.exists(RUTA_ARCHIVO_GRUPO):
+            print("No hay archivo de grupos, se creará uno nuevo.")
+            return crear_grupo_interactivo()
+
+        try:
+            archivo = open(RUTA_ARCHIVO_GRUPO, "r", encoding="UTF-8")
+            if os.path.getsize(RUTA_ARCHIVO_GRUPO) == 0:
+                grupos = []
+            else:
+                try:
+                    grupos = json.load(archivo)
+                except json.JSONDecodeError:
+                    print("El archivo de grupos está vacío o dañado. Se reiniciará.")
+                    grupos = []
+            archivo.close()
+        except OSError as error:
+            print(f"Error al leer el archivo de grupos: {error}")
+            grupos = []
+
+        if not grupos:
+            print("No hay grupos activos, se creará uno nuevo.")
+            return crear_grupo_interactivo()
+
+        grupos_activos = []
+        for g in grupos:
+            if not g.get("anulado", False):
+                grupos_activos.append(g)
+
+        if len(grupos_activos) == 0:
+            print("No hay grupos activos, se creará uno nuevo.")
             return crear_grupo_interactivo()
 
         print("0: Crear grupo nuevo")
-        entrada = input("Ingrese id de grupo (o 0): ").strip()
+        entrada = input("Ingrese ID de grupo (o 0): ").strip()
+
         if entrada.isdigit():
             val = int(entrada)
             if val == 0:
                 return crear_grupo_interactivo()
-            g = buscar_grupo_por_id(val)
-            if g:
-                return val
-        print("Opcion invalida.")
+
+            for g in grupos_activos:
+                if g["id"] == val:
+                    return val
+
+        print("Opción inválida. Intente nuevamente.")
+
 
 def alta_contacto():
     print("\n=== Alta de contacto ===")
+
     nombre = input("Nombre: ").strip()
     while nombre == "" or not nombre.replace(" ", "").isalpha():
         print("El nombre es obligatorio y debe contener solo letras.")
         nombre = input("Nombre (obligatorio): ").strip()
 
-    tel1 = input("Telefono 1: ").strip()
+    tel1 = input("Teléfono 1: ").strip()
     while tel1 == "" or not tel1.isdigit():
-        print("El telefono debe ser numerico y es obligatorio.")
-        tel1 = input("Telefono 1 (obligatorio): ").strip()
+        print("El teléfono debe ser numérico y es obligatorio.")
+        tel1 = input("Teléfono 1 (obligatorio): ").strip()
 
     if tel1 in _telefonos_unicos():
-        raise ValueError(f"El teléfono {tel1} ya existe en otro contacto activo.")
+        print(f"El teléfono {tel1} ya existe en otro contacto activo.")
+        return
 
-    tel2 = input("Telefono 2 (opcional): ").strip()
+    tel2 = input("Teléfono 2 (opcional): ").strip()
     while tel2 != "" and not tel2.isdigit():
-        print("El telefono debe ser numerico o dejar vacío.")
-        tel2 = input("Telefono 2 (opcional): ").strip()
+        print("El teléfono debe ser numérico o dejar vacío.")
+        tel2 = input("Teléfono 2 (opcional): ").strip()
 
     correo = input("Correo (opcional): ").strip()
     while not validar_correo(correo):
-        print("Correo invalido.")
+        print("Correo inválido.")
         correo = input("Correo (opcional): ").strip()
 
     id_grupo = elegir_grupo()
 
-    cid = max(contactos_dict.keys(), default=0) + 1
-    nuevo = [cid, nombre, tel1, tel2, correo, id_grupo, False]
-    contactos_dict[cid] = nuevo
+    contactos = []
+    if os.path.exists(RUTA_ARCHIVO_CONTACTO) and os.path.getsize(RUTA_ARCHIVO_CONTACTO) > 0:
+        try:
+            archivo = open(RUTA_ARCHIVO_CONTACTO, "r", encoding="UTF-8")
+            contactos = json.load(archivo)
+        except (OSError, json.JSONDecodeError):
+            print("Error al leer el archivo de contactos.")
+            contactos = []
+        finally:
+            try:
+                archivo.close()
+            except Exception as e:
+                print("No se pudo cerrar el archivo:", e)
 
-    print(f"Contacto creado con exito (id={cid})")
+    nuevo_id = 0
+    for c in contactos:
+        if c["id"] > nuevo_id:
+            nuevo_id = c["id"]
+    nuevo_id += 1
 
-    # Convertir la lista a diccionario para guardar en JSON
     nuevo_contacto = {
-        "id": cid,
+        "id": nuevo_id,
         "nombre": nombre,
         "tel1": tel1,
         "tel2": tel2,
         "correo": correo,
         "id_grupo": id_grupo,
-        "activo": not nuevo[6]
+        "activo": True
     }
 
     agregar_datosContacto(nuevo_contacto)
+    print(f"\nContacto '{nombre}' creado con éxito (ID: {nuevo_id}).")
+    "usamos la recursividad para contar contactos activos"
+    cantidad = contar_contactos_activos(contactos)
+    print("Contactos activos:", cantidad)
+def resumen_contactos(contactos):
+    
+    activos = list(filter(lambda c: c.get("activo", True), contactos))
 
-def listar_contactos_detallado(filtro_nombre: str = "", filtro_grupo_desc: str = ""):
-    activos = [c for c in contactos_dict.values() if not c[6]]
+    resumen = list(map(lambda c: f"{c['nombre']} ({c['tel1']})", activos))
+
+    total_tels = reduce(lambda acc, c: acc + (1 if c['tel1'] else 0), activos, 0)
+
+    print("\n=== RESUMEN DE CONTACTOS ===")
+    print("Contactos activos:")
+    for linea in resumen:
+        print(" -", linea)
+    print(f"Total de teléfonos registrados: {total_tels}")
+
+def listar_contactos_detallado(filtro_nombre="", filtro_grupo_desc=""):
+    """Muestra los contactos activos, con posibilidad de filtrar por nombre o grupo."""
+
+    if not os.path.exists(RUTA_ARCHIVO_CONTACTO) or os.path.getsize(RUTA_ARCHIVO_CONTACTO) == 0:
+        print("No hay contactos registrados.")
+        return
+
+    try:
+        archivo_contactos = open(RUTA_ARCHIVO_CONTACTO, "r", encoding="UTF-8")
+        contactos = json.load(archivo_contactos)
+        archivo_contactos.close()
+    except OSError:
+        print("Error al leer el archivo de contactos.")
+        return
+
+    grupos = []
+    if os.path.exists(RUTA_ARCHIVO_GRUPO) and os.path.getsize(RUTA_ARCHIVO_GRUPO) > 0:
+        try:
+            archivo_grupos = open(RUTA_ARCHIVO_GRUPO, "r", encoding="UTF-8")
+            grupos = json.load(archivo_grupos)
+            archivo_grupos.close()
+        except OSError:
+            grupos = []
+
+    contactos_filtrados = []
+    for c in contactos:
+        if c.get("activo", True):
+            contactos_filtrados.append(c)
 
     if filtro_nombre.strip() != "":
-        activos = [c for c in activos if filtro_nombre.lower() in c[1].lower()]
+        temp = []
+        for c in contactos_filtrados:
+            if filtro_nombre.lower() in c["nombre"].lower():
+                temp.append(c)
+        contactos_filtrados = temp
 
     if filtro_grupo_desc.strip() != "":
-        activos = [c for c in activos if buscar_grupo_por_id(c[5]) and filtro_grupo_desc.lower() in buscar_grupo_por_id(c[5])[1].lower()]
+        temp = []
+        for c in contactos_filtrados:
+            for g in grupos:
+                if not g.get("anulado", False):
+                    if g["id"] == c["id_grupo"] and filtro_grupo_desc.lower() in g["nombre"].lower():
+                        temp.append(c)
+                        break
+        contactos_filtrados = temp
 
-    if not activos:
-        print("No hay contactos que cumplan con el filtro.")
-    else:
-        print("\nID | NOMBRE                | TEL1        | TEL2         | CORREO                         | GRUPO")
-        print("---------------------------------------------------------------------------------------------")
-        for c in activos:
-            gid = c[5]
-            nombre_grupo = "(sin grupo)"
+    if len(contactos_filtrados) == 0:
+        print("No hay contactos que cumplan con los filtros.")
+        return
 
-            g = buscar_grupo_por_id(gid)
-            if g:
-                nombre_grupo = g[1].strip()
-            print(f"{str(c[0]).ljust(2)} | {c[1].strip().ljust(20)} | {c[2].strip().ljust(12)} | {c[3].strip().ljust(12)} | {c[4].strip().ljust(30)} | {nombre_grupo}")
+    print("\nID | NOMBRE                | TEL1        | TEL2         | CORREO                         | GRUPO")
+    print("---------------------------------------------------------------------------------------------")
 
-    return activos
+    for c in contactos_filtrados:
+        grupo_nombre = "(sin grupo)"
+        for g in grupos:
+            if g["id"] == c["id_grupo"] and not g.get("anulado", False):
+                grupo_nombre = g["nombre"]
+                break
+
+        print(f"{str(c['id']).ljust(2)} | {c['nombre'].ljust(20)} | {c['tel1'].ljust(12)} | {c['tel2'].ljust(12)} | {c['correo'].ljust(30)} | {grupo_nombre}")
+    resumen_contactos(contactos_filtrados)
+
 
 def eliminar_contacto():
-    if not contactos_dict:
-        print("No hay contactos para eliminar.")
-        return
-
-    print("\nContactos activos (id - nombre):")
-    _listar_contactos_linea_base(False)
-
-    cid = _ingresar_id_contacto()
-    contacto = contactos_dict.get(cid)
-
-    if not contacto or contacto[6]:
-        print("No existe un contacto activo con ese ID.")
-        return
-
-    if input(f"¿Eliminar contacto '{contacto[1]}'? (s/n): ").strip().lower() == "s":
-        contacto[6] = True
-        print("Contacto marcado como eliminado (baja lógica).")
-        baja_contacto() 
-    else:
-        print("Operación cancelada.")
-
-
+    print("\n=== ELIMINAR CONTACTO ===")
+    baja_contacto()
 
 def restaurar_contacto():
-    anulados = [c for c in contactos_dict.values() if c[6]]
-    if not anulados:
-        print("No hay contactos anulados para restaurar.")
+    """
+    Restaura un contacto dado de baja lógica (activo=False).
+    Trabaja con archivo JSON.
+    """
+    if not os.path.exists(RUTA_ARCHIVO_CONTACTO):
+        print("El archivo de contactos no existe.")
         return
 
-    print("\nContactos anulados (id - nombre):")
-    _listar_contactos_linea_base(True)
+    try:
+        archivo = open(RUTA_ARCHIVO_CONTACTO, "r", encoding="UTF-8")
+        contactos = json.load(archivo)
+    except (OSError, json.JSONDecodeError):
+        print("Error al leer el archivo de contactos.")
+        return
+    finally:
+        try:
+            archivo.close()
+        except Exception as e:
+            print("No se pudo cerrar el archivo correctamente:", e)
 
-    cid = _ingresar_id_contacto()
-    contacto = contactos_dict.get(cid)
+    print("\n=== Contactos inactivos ===")
+    hay_inactivos = False
+    for c in contactos:
+        if not c.get("activo", True):
+            print(f"{c['id']} - {c['nombre']} ({c['tel1']})")
+            hay_inactivos = True
 
-    if not contacto or not contacto[6]:
-        print("No existe un contacto anulado con ese ID.")
+    if not hay_inactivos:
+        print("No hay contactos inactivos para restaurar.")
         return
 
-    if input(f"¿Restaurar contacto '{contacto[1]}'? (s/n): ").strip().lower() == "s":
-        contacto[6] = False
-        print("Contacto restaurado.")
-    else:
-        print("Operacion cancelada.")
+    codigo_restaurar = input("\nIngrese el ID del contacto a restaurar: ").strip()
+
+    encontrado = False
+    for c in contactos:
+        if str(c["id"]) == codigo_restaurar and not c.get("activo", True):
+            encontrado = True
+            print(f"\nContacto encontrado: {c['id']} - {c['nombre']}")
+            confirmar = input("¿Desea restaurar este contacto? (s/n): ").strip().lower()
+
+            if confirmar == "s":
+                c["activo"] = True
+                print("Contacto restaurado correctamente.")
+            else:
+                print("Operación cancelada.")
+            break
+
+    if not encontrado:
+        print(f"No se encontró un contacto inactivo con el ID {codigo_restaurar}.")
+        return
+
+    try:
+        archivo = open(RUTA_ARCHIVO_CONTACTO, "w", encoding="UTF-8")
+        json.dump(contactos, archivo, ensure_ascii=False, indent=4)
+    except OSError as e:
+        print("Error al guardar los cambios:", e)
+    finally:
+        try:
+            archivo.close()
+        except Exception as e:
+            print("No se pudo cerrar el archivo correctamente:", e)
+
 
 def editar_contacto():
-    if not contactos_dict:
-        print("No hay contactos para editar.")
-        return
+    print("\n=== MODIFICAR CONTACTO ===")
+    modificar_contacto()
 
-    print("\nContactos activos (id - nombre):")
-    _listar_contactos_linea_base(False)
 
-    cid = _ingresar_id_contacto()
-    contacto = contactos_dict.get(cid)
 
-    if not contacto or contacto[6]:
-        print("No existe un contacto activo con ese ID.")
-        return
 
-    print("\nDeje vacio para mantener el valor actual.")
 
-    campos = [
-        (1, f"Nombre ({contacto[1]}): "),
-        (2, f"Teléfono 1 ({contacto[2]}): "),
-        (3, f"Teléfono 2 ({contacto[3]}): "),
-        (4, f"Correo ({contacto[4]}): ")
-    ]
 
-    for i, msg in campos:
-        nuevo_valor = input(msg).strip()
-        if nuevo_valor != "":
-            if i == 1 and nuevo_valor.replace(" ", "").isalpha():
-                contacto[1] = nuevo_valor
-            elif i in (2, 3) and nuevo_valor.isdigit():
-                contacto[i] = nuevo_valor
-            elif i == 4 and validar_correo(nuevo_valor):
-                contacto[4] = nuevo_valor
+    """"
+    recursividad"""
 
-    if input("¿Cambiar grupo? (s/n): ").strip().lower() == "s":
-        contacto[5] = elegir_grupo()
+def contar_contactos_activos(contactos, i=0):
 
-    contactos_dict[cid] = contacto
-    print("Contacto actualizado.")
+    if i == len(contactos):
+        return 0
+    if contactos[i].get("activo", True):
+        return 1 + contar_contactos_activos(contactos, i + 1)
+    else:
+        return contar_contactos_activos(contactos, i + 1)
+
+
+

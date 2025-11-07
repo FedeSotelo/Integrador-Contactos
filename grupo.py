@@ -1,28 +1,39 @@
-# {id: [id, nombre, anulado]}
-grupos_dict = {}
+
 from archivo import agregar_datosGrupo;
-from functools import reduce
+from archivo import RUTA_ARCHIVO_GRUPO,listar_grupos,eliminar_grupo,restaurar_grupo,editar_grupo, buscar_grupo_por_id, listar_grupos_inactivos
+import json, os
 
-def next_id(d: dict) -> int:
-    if not d:
+def next_id() -> int:
+    if not os.path.exists(RUTA_ARCHIVO_GRUPO):
         return 1
-    return reduce(lambda a, b: a if a > b else b, d.keys()) + 1
+    with open(RUTA_ARCHIVO_GRUPO, "r", encoding="UTF-8") as arch:
+        try:
+            grupos = json.load(arch)
+        except json.JSONDecodeError:
+            return 1
+        if not grupos:
+            return 1
+        return max(g["id"] for g in grupos) + 1
 
-buscar_grupo_por_id = lambda gid: grupos_dict.get(gid, None)
 
 def existe_grupo_por_nombre(nombre: str, ignorar_id=None) -> bool:
     """
     Devuelve True si ya existe un grupo activo con ese nombre.
-    No usa any(), solo filter + reduce.
+    Lee directamente desde grupo.json y evita duplicados.
     """
-    candidatos = filter(
-        lambda g: (not g[2]) and g[1].strip().lower() == nombre.strip().lower()
-        and (ignorar_id is None or g[0] != ignorar_id),
-        grupos_dict.values()
-    )
+    if not os.path.exists(RUTA_ARCHIVO_GRUPO) or os.path.getsize(RUTA_ARCHIVO_GRUPO) == 0:
+        return False
 
-    # reducimos a un contador
-    return reduce(lambda acc, _: acc + 1, candidatos, 0) > 0
+    with open(RUTA_ARCHIVO_GRUPO, "r", encoding="UTF-8") as archivo:
+        grupos = json.load(archivo)
+        for g in grupos:
+            mismo_nombre = g["nombre"].strip().lower() == nombre.strip().lower()
+            activo = g.get("anulado", False) is False  # solo grupos activos
+            distinto_id = (ignorar_id is None or g["id"] != ignorar_id)
+
+            if mismo_nombre and activo and distinto_id:
+                return True
+    return False
 
 def _ingresar_id_grupo():
     entrada = input("Ingrese ID de grupo: ").strip()
@@ -32,107 +43,44 @@ def _ingresar_id_grupo():
     return None
 
 
-def listar_grupos():
-    print("\nGrupos activos:")
-    activos = [g for g in grupos_dict.values() if not g[2]]
-    if activos:
-        for g in activos:
-            print(str(g[0]).ljust(3) + " - " + g[1].strip().ljust(20))
-    else:
-        print("(no hay grupos activos)")
-
-def listar_grupos_inactivos():
-    print("\nGrupos inactivos:")
-    inactivos = [g for g in grupos_dict.values() if g[2]]
-    if inactivos:
-        for g in inactivos:
-            print(str(g[0]).ljust(3) + " - " + g[1].strip().ljust(20))
-    else:
-        print("(no hay grupos inactivos)")
+def mostrar_grupos():
+    listar_grupos()
 
 
 def crear_grupo_interactivo():
     print("\n=== Crear grupo ===")
     nombre = input("Nombre del nuevo grupo: ").strip()
+
     while nombre == "" or existe_grupo_por_nombre(nombre):
         if nombre == "":
-            print("Nombre inválido (no puede estar vacío).")
+            print("El nombre no puede estar vacío.")
         else:
-            print("Nombre repetido en grupos activos.")
+            print("Ya existe un grupo activo con ese nombre.")
         nombre = input("Nombre del nuevo grupo: ").strip()
 
-    gid = next_id(grupos_dict)
-    nuevo = [gid, nombre, False]
-    grupos_dict[gid] = nuevo
-    print(f"Grupo creado (id={gid})")
+    gid = next_id()
+
     nuevo_grupo = {
         "id": gid,
         "nombre": nombre,
-        "anulado": not nuevo[2]
+        "anulado": False
     }
 
     agregar_datosGrupo(nuevo_grupo)
+    print(f"Grupo creado con éxito (ID={gid})")
+
     return gid
 
-
-def eliminar_grupo():
+def baja_grupo():
     listar_grupos()
-    if not grupos_dict:
-        print("No hay grupos para eliminar.")
-        return
-
-    gid = _ingresar_id_grupo()
-    
-    if gid is None or gid not in grupos_dict or grupos_dict[gid][2]:
-        raise LookupError("No existe un grupo activo con ese ID.")
-
-    nombre = grupos_dict[gid][1]
-    if input(f"¿Eliminar (baja logica) grupo '{nombre}'? (s/n): ").strip().lower() == "s":
-        grupos_dict[gid][2] = True
-        print("Grupo marcado como eliminado (baja logica).")
-    else:
-        print("Operacion cancelada.")
+    eliminar_grupo()
 
 
-def restaurar_grupo():
+def reactivar_grupo():
     listar_grupos_inactivos()
-    gid = _ingresar_id_grupo()
-    if gid is None or gid not in grupos_dict or not grupos_dict[gid][2]:
-        print("No existe un grupo inactivo con ese ID.")
-        return
+    restaurar_grupo()
 
-    nombre = grupos_dict[gid][1]
-    if existe_grupo_por_nombre(nombre):
-        print("No se puede restaurar: ya existe un grupo activo con ese nombre.")
-        return
-
-    if input(f"¿Restaurar grupo '{nombre}'? (s/n): ").strip().lower() == "s":
-        grupos_dict[gid][2] = False
-        print("Grupo restaurado.")
-    else:
-        print("Operacion cancelada.")
-
-
-def editar_grupo():
-    listar_grupos()
-    if not grupos_dict:
-        print("No hay grupos para editar.")
-        return
-
-    gid = _ingresar_id_grupo()
-    if gid is None or gid not in grupos_dict or grupos_dict[gid][2]:
-        print("No existe un grupo activo con ese ID.")
-        return
-
-    g = grupos_dict[gid]
-    actual_nom = g[1]
-    nuevo_nombre = input(f"Nombre ({actual_nom}): ").strip()
-    if nuevo_nombre != "":
-        while nuevo_nombre == "" or not nuevo_nombre.replace(" ", "").isalpha() or \
-              existe_grupo_por_nombre(nuevo_nombre, ignorar_id=g[0]):
-            print("Nombre inválido o duplicado.")
-            nuevo_nombre = input(f"Nombre ({actual_nom}): ").strip()
-        g[1] = nuevo_nombre
-
-    grupos_dict[gid] = g
-    print("Grupo actualizado.")
+def editar_grupo_archivo():
+  
+    print("\n=== Editar grupo ===")
+    editar_grupo()  
