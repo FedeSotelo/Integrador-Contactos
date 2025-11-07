@@ -46,30 +46,32 @@ def _ingresar_id_grupo():
 def mostrar_grupos():
     listar_grupos()
 
-
 def crear_grupo_interactivo():
     print("\n=== Crear grupo ===")
-    nombre = input("Nombre del nuevo grupo: ").strip()
-
-    while nombre == "" or existe_grupo_por_nombre(nombre):
-        if nombre == "":
-            print("El nombre no puede estar vacío.")
-        else:
-            print("Ya existe un grupo activo con ese nombre.")
+    
+    try:
         nombre = input("Nombre del nuevo grupo: ").strip()
+        while nombre == "" or existe_grupo_por_nombre(nombre):
+            if nombre == "":
+                print("El nombre no puede estar vacío.")
+            else:
+                print("Ya existe un grupo activo con ese nombre.")
+            nombre = input("Nombre del nuevo grupo: ").strip()
 
-    gid = next_id()
+        gid = next_id()
 
-    nuevo_grupo = {
-        "id": gid,
-        "nombre": nombre,
-        "anulado": False
-    }
+        nuevo_grupo = {
+            "id": gid,
+            "nombre": nombre,
+            "anulado": False
+        }
 
-    agregar_datosGrupo(nuevo_grupo)
-    print(f"Grupo creado con éxito (ID={gid})")
+        agregar_datosGrupo(nuevo_grupo)
+        print(f"Grupo creado con éxito (ID={gid})")
+        return gid
 
-    return gid
+    except Exception as e:
+        print(f"Error inesperado al crear el grupo: {e}")
 
 def baja_grupo():
     listar_grupos()

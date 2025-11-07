@@ -158,7 +158,14 @@ def matriz_contactos_por_grupo_y_tipo():
         print("No hay datos activos suficientes para generar la matriz.")
         return
 
-    columnas = tipos_interaccion
+    tipos_encontrados = []
+    for i in interacciones_activas:
+        tipo = i["tipo"]
+        if tipo not in tipos_encontrados:
+            tipos_encontrados.append(tipo)
+
+
+    columnas = tipos_encontrados
     matriz = []
 
     for g in grupos_activos:
@@ -178,9 +185,9 @@ def matriz_contactos_por_grupo_y_tipo():
     print("GRUPO".ljust(15) + " | " + " | ".join(c.ljust(12) for c in columnas))
     print("-" * (17 + len(columnas) * 15))
 
-    for fila in matriz:
-        print(fila[0].ljust(15) + " | " + " | ".join(str(x).ljust(12) for x in fila[1:]))
 
+    for fila in matriz[:10]:
+        print(fila[0].ljust(15) + " | " + " | ".join(str(x).ljust(12) for x in fila[1:]))
 
 
         

@@ -131,6 +131,9 @@ def alta_contacto():
     "usamos la recursividad para contar contactos activos"
     cantidad = contar_contactos_activos(contactos)
     print("Contactos activos:", cantidad)
+
+
+    
 def resumen_contactos(contactos):
     
     activos = list(filter(lambda c: c.get("activo", True), contactos))
