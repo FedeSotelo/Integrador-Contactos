@@ -222,7 +222,7 @@ def matriz_contactos_por_grupo_y_tipo():
     print("GRUPO".ljust(15) + " | " + " | ".join(c.ljust(12) for c in columnas))
     print("-" * (17 + len(columnas) * 15))
 
-    for fila in matriz:
+    for fila in matriz[:10]:
         print(fila[0].ljust(15) + " | " + " | ".join(str(x).ljust(12) for x in fila[1:]))
 
         

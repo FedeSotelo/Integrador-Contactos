@@ -7,9 +7,9 @@ from estadisticas import promedio_interacciones_por_contacto, RUTA_ARCHIVO_INTER
 @pytest.mark.parametrize(
     "correo, esperado",
     [
-        ("persona@mail.com", True),   # correo válido
-        ("", True),                   # vacío permitido por tu función
-        ("correo-malo", False),       # sin @ → inválido
+        ("persona@mail.com", True),   
+        ("", True),                   
+        ("correo-malo", False),       
     ]
 )
 def test_validar_correo_falla(correo, esperado):

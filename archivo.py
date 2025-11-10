@@ -301,7 +301,6 @@ def obtener_nombre_y_tel(id_contacto, archivo):
         return None
 
     for c in contactos:
-        # convertimos ambos a string para evitar conflicto int vs str
         if str(c["id"]) == str(id_contacto) and c.get("activo", True):
             return (c["nombre"], c["tel1"])
 
@@ -555,35 +554,27 @@ def modificar_contacto():
 
 
 def telefonos_unicos():
-   
     telefonos = set()
     try:
-        arch = open(RUTA_ARCHIVO_CONTACTO, "rt", encoding="UTF-8")
+        with open(RUTA_ARCHIVO_CONTACTO, "rt", encoding="UTF-8") as arch:
+            linea = arch.readline()
+            while linea != "":
+                datos = linea.strip().split(";")
+                if len(datos) >= 7:
+                    tel1 = datos[2].strip()
+                    tel2 = datos[3].strip()
+                    activo = datos[6].strip().lower()
+
+                    if activo == "true":
+                        if tel1 != "":
+                            telefonos.add(tel1)
+                        if tel2 != "":
+                            telefonos.add(tel2)
+                linea = arch.readline()
     except OSError as error:
         print(f"No se pudo leer el archivo de contactos: {error}")
-    else:
-        linea = arch.readline()
-        while linea != "":
-            datos = linea.strip().split(";")
-            if len(datos) >= 7:
-                tel1 = datos[2].strip()
-                tel2 = datos[3].strip()
-                activo = datos[6].strip().lower()
-
-                if activo == "true":
-                    if tel1 != "":
-                        telefonos.add(tel1)
-                    if tel2 != "":
-                        telefonos.add(tel2)
-            linea = arch.readline()
-    finally:
-        try:
-            arch.close()
-        except NameError:
-            pass
 
     return telefonos
-
 
 
 """
@@ -592,24 +583,19 @@ TIPO DE INTERACIONES
 """
 def listar_tipos():
     try:
-        arch = open(RUTA_ARCHIVO_TIPOS, "rt", encoding="UTF-8")
+        with open(RUTA_ARCHIVO_TIPOS, "rt", encoding="UTF-8") as arch:
+            print("\n=== LISTADO DE TIPOS DE INTERACCIÓN ===")
+            print(f'{"ID":<5}{"DESCRIPCIÓN":<20}')
+            print("-----------------------------------")
+
+            for linea in arch:
+                datos = linea.strip().split(";")
+                if len(datos) >= 2:
+                    print(f"{datos[0]:<5}{datos[1]:<20}")
+
     except OSError as error:
         print(f"No se pudo leer el archivo: {error}")
-    else:
-        print("\n=== LISTADO DE TIPOS DE INTERACCIÓN ===")
-        print(f'{"ID":<5}{"DESCRIPCIÓN":<20}')
-        print("-----------------------------------")
-        linea = arch.readline()
-        while linea != "":
-            datos = linea.strip().split(";")
-            if len(datos) >= 2:
-                print(f"{datos[0]:<5}{datos[1]:<20}")
-            linea = arch.readline()
-    finally:
-        try:
-            arch.close()
-        except NameError:
-            pass
+
 
 
 def next_id_tipos():
@@ -631,16 +617,11 @@ def alta_tipo():
     descripcion = input("Ingrese descripción del tipo: ").strip()
 
     try:
-        arch = open(RUTA_ARCHIVO_TIPOS, "at", encoding="UTF-8")
-        arch.write(f"{nuevo_id};{descripcion}\n")
-        print(f"Tipo '{descripcion}' agregado correctamente.")
+        with open(RUTA_ARCHIVO_TIPOS, "at", encoding="UTF-8") as arch:
+            arch.write(f"{nuevo_id};{descripcion}\n")
+            print(f"Tipo '{descripcion}' agregado correctamente.")
     except OSError as error:
         print("Error al escribir en el archivo:", error)
-    finally:
-        try:
-            arch.close()
-        except NameError:
-            pass
 
 
 def baja_tipo():
@@ -649,27 +630,21 @@ def baja_tipo():
     encontrado = False
 
     try:
-        arch = open(RUTA_ARCHIVO_TIPOS, "rt", encoding="UTF-8")
-        aux = open(temp, "wt", encoding="UTF-8")
+        with open(RUTA_ARCHIVO_TIPOS, "rt", encoding="UTF-8") as arch, \
+             open(temp, "wt", encoding="UTF-8") as aux:
 
-        for linea in arch:
-            datos = linea.strip().split(";")
-            codigo = datos[0]
-            if codigo != codigo_baja:
-                aux.write(linea)
-            else:
-                encontrado = True
+            for linea in arch:
+                datos = linea.strip().split(";")
+                codigo = datos[0]
+                if codigo != codigo_baja:
+                    aux.write(linea)
+                else:
+                    encontrado = True
 
     except FileNotFoundError:
         print("El archivo no existe.")
     except OSError as error:
         print("Error en el acceso al archivo:", error)
-    finally:
-        try:
-            arch.close()
-            aux.close()
-        except:
-            pass
 
     if encontrado:
         os.remove(RUTA_ARCHIVO_TIPOS)
@@ -686,31 +661,26 @@ def modificar_tipo():
     encontrado = False
 
     try:
-        arch = open(RUTA_ARCHIVO_TIPOS, "rt", encoding="UTF-8")
-        aux = open(temp, "wt", encoding="UTF-8")
+        with open(RUTA_ARCHIVO_TIPOS, "rt", encoding="UTF-8") as arch, \
+             open(temp, "wt", encoding="UTF-8") as aux:
 
-        for linea in arch:
-            datos = linea.strip().split(";")
-            codigo = datos[0]
-            if codigo == codigo_modif:
-                encontrado = True
-                descripcion = datos[1]
-                print(f"Tipo encontrado: {codigo} - {descripcion}")
-                nueva_desc = input("Nueva descripción (Enter para mantener): ").strip() or descripcion
-                aux.write(f"{codigo};{nueva_desc}\n")
-                print(f"Tipo {codigo} modificado correctamente.")
-            else:
-                aux.write(linea)
+            for linea in arch:
+                datos = linea.strip().split(";")
+                codigo = datos[0]
+                if codigo == codigo_modif:
+                    encontrado = True
+                    descripcion = datos[1]
+                    print(f"Tipo encontrado: {codigo} - {descripcion}")
+                    nueva_desc = input("Nueva descripción (Enter para mantener): ").strip() or descripcion
+                    aux.write(f"{codigo};{nueva_desc}\n")
+                    print(f"Tipo {codigo} modificado correctamente.")
+                else:
+                    aux.write(linea)
+
     except FileNotFoundError:
         print("El archivo no existe.")
     except OSError as error:
         print("Error en el acceso al archivo:", error)
-    finally:
-        try:
-            arch.close()
-            aux.close()
-        except:
-            pass
 
     if encontrado:
         os.remove(RUTA_ARCHIVO_TIPOS)
@@ -719,31 +689,24 @@ def modificar_tipo():
         os.remove(temp)
         print(f"No se encontró el tipo {codigo_modif}.")
 
+
 def elegir_tipo_interaccion():
-  
     try:
-        arch = open(RUTA_ARCHIVO_TIPOS, "rt", encoding="UTF-8")
+        with open(RUTA_ARCHIVO_TIPOS, "rt", encoding="UTF-8") as arch:
+            print("\n=== TIPOS DE INTERACCIÓN ===")
+            tipos = {}
+
+            for linea in arch:
+                datos = linea.strip().split(";")
+                if len(datos) >= 2:
+                    codigo = datos[0]
+                    descripcion = datos[1]
+                    tipos[codigo] = descripcion
+                    print(f"{codigo}: {descripcion}")
+
     except OSError as error:
         print(f"No se pudo abrir el archivo de tipos: {error}")
         return None
-    else:
-        print("\n=== TIPOS DE INTERACCIÓN ===")
-        tipos = {}  # diccionario temporal para mapear ID → descripción
-
-        linea = arch.readline()
-        while linea != "":
-            datos = linea.strip().split(";")
-            if len(datos) >= 2:
-                codigo = datos[0]
-                descripcion = datos[1]
-                tipos[codigo] = descripcion
-                print(f"{codigo}: {descripcion}")
-            linea = arch.readline()
-    finally:
-        try:
-            arch.close()
-        except NameError:
-            pass
 
     opcion = input("\nSeleccione el ID del tipo de interacción: ").strip()
     if opcion in tipos:
@@ -751,7 +714,6 @@ def elegir_tipo_interaccion():
     else:
         print("Opción inválida.")
         return None
-
 
 
 """
