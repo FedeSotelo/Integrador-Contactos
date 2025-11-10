@@ -1,0 +1,10 @@
+1;llamada
+2;correo
+3;mensaje
+4;visita
+5;videollamada
+6;reunión
+7;recordatorio
+8;nota interna
+9;seguimiento
+10;reclamo

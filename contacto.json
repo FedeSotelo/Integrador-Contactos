@@ -1,0 +1,101 @@
+[
+    {
+        "id": 1,
+        "nombre": "Federico",
+        "tel1": "1132547890",
+        "tel2": "",
+        "correo": "federico@mail.com",
+        "id_grupo": 1,
+        "activo": true
+    },
+    {
+        "id": 2,
+        "nombre": "Lucía",
+        "tel1": "1147852369",
+        "tel2": "1136549870",
+        "correo": "lucia@mail.com",
+        "id_grupo": 2,
+        "activo": true
+    },
+    {
+        "id": 3,
+        "nombre": "Martín",
+        "tel1": "1158973214",
+        "tel2": "",
+        "correo": "martin@mail.com",
+        "id_grupo": 1,
+        "activo": false
+    },
+    {
+        "id": 4,
+        "nombre": "Carla",
+        "tel1": "1174529631",
+        "tel2": "",
+        "correo": "carla@mail.com",
+        "id_grupo": 3,
+        "activo": true
+    },
+    {
+        "id": 5,
+        "nombre": "Tomás",
+        "tel1": "1165478932",
+        "tel2": "1198754632",
+        "correo": "tomas@mail.com",
+        "id_grupo": 2,
+        "activo": true
+    },
+    {
+        "id": 6,
+        "nombre": "Valentina",
+        "tel1": "1147852698",
+        "tel2": "",
+        "correo": "valentina@mail.com",
+        "id_grupo": 1,
+        "activo": false
+    },
+    {
+        "id": 7,
+        "nombre": "Nicolás",
+        "tel1": "1156478923",
+        "tel2": "",
+        "correo": "nicolas@mail.com",
+        "id_grupo": 3,
+        "activo": true
+    },
+    {
+        "id": 8,
+        "nombre": "Camila",
+        "tel1": "1178542369",
+        "tel2": "",
+        "correo": "camila@mail.com",
+        "id_grupo": 2,
+        "activo": true
+    },
+    {
+        "id": 9,
+        "nombre": "Santiago",
+        "tel1": "1189654723",
+        "tel2": "",
+        "correo": "santiago@mail.com",
+        "id_grupo": 3,
+        "activo": false
+    },
+    {
+        "id": 10,
+        "nombre": "Florencia",
+        "tel1": "1198745632",
+        "tel2": "1132549874",
+        "correo": "florencia@mail.com",
+        "id_grupo": 1,
+        "activo": true
+    },
+    {
+        "id": 11,
+        "nombre": "Veronica",
+        "tel1": "1190484042",
+        "tel2": "",
+        "correo": "",
+        "id_grupo": 3,
+        "activo": true
+    }
+]

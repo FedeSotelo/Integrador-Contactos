@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "nombre": "Amigos",
+        "anulado": false
+    },
+    {
+        "id": 2,
+        "nombre": "Familia",
+        "anulado": false
+    },
+    {
+        "id": 3,
+        "nombre": "Trabajo",
+        "anulado": false
+    },
+    {
+        "id": 4,
+        "nombre": "Clientes",
+        "anulado": false
+    },
+    {
+        "id": 5,
+        "nombre": "Universidad",
+        "anulado": true
+    }
+]

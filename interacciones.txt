@@ -1,0 +1,12 @@
+1;1;llame al mecanico;10-09-2024;llamada;False
+2;2;envie correo de seguimiento;15-09-2024;correo;True
+3;3;visita al cliente;18-09-2024;visita;True
+4;1;reclamó por factura;22-09-2024;llamada;False
+5;4;consulto disponibilidad;25-09-2024;mensaje;True
+6;5;programo reunión virtual;28-09-2024;videollamada;True
+7;2;solicito presupuesto;30-09-2024;correo;False
+8;3;confirmo entrega;02-10-2024;llamada;True
+9;5;envio documentacipn pendiente;06-10-2024;correo;True
+10;4;aviso cambio de horario;08-10-2024;mensaje;False
+11;8;cafe con ella;10-08-2025;visita;False
+12;7;hablamos de futbol;09-08-2025;visita;False

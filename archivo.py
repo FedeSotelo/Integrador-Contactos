@@ -1,13 +1,13 @@
-RUTA_ARCHIVO_CONTACTO = r"F:\Feden\Desktop\Materias UADE\2DO CUATRIMESTRE\PROGRAMACION 1\contacto.json"
-RUTA_ARCHIVO_GRUPO = r"F:\Feden\Desktop\Materias UADE\2DO CUATRIMESTRE\PROGRAMACION 1\grupo.json"
-RUTA_ARCHIVO_TIPOS = r"F:\Feden\Desktop\Materias UADE\2DO CUATRIMESTRE\PROGRAMACION 1\tipos_interaccion.txt"
-RUTA_ARCHIVO_INTERACCIONES = r"F:\Feden\Desktop\Materias UADE\2DO CUATRIMESTRE\PROGRAMACION 1\interacciones.txt"
+RUTA_ARCHIVO_CONTACTO = r"C:\Users\fsotelo\Desktop\MATERIAS\2DO Cuatrimestre\PROGRAMACION I\Integrador Contactos\contacto.json"
+RUTA_ARCHIVO_GRUPO = r"C:\Users\fsotelo\Desktop\MATERIAS\2DO Cuatrimestre\PROGRAMACION I\Integrador Contactos\grupo.json"
+RUTA_ARCHIVO_TIPOS = r"C:\Users\fsotelo\Desktop\MATERIAS\2DO Cuatrimestre\PROGRAMACION I\Integrador Contactos\tipos_interaccion.txt"
+RUTA_ARCHIVO_INTERACCIONES = r"C:\Users\fsotelo\Desktop\MATERIAS\2DO Cuatrimestre\PROGRAMACION I\Integrador Contactos\interacciones.txt"
 
 
 import json
 import os;
 
-""""
+"""
 grupos
 """
 def agregar_datosGrupo(nuevo_Grupo):
