@@ -47,9 +47,6 @@ def elegir_contacto():
     else:
         print("ID inválido o contacto no activo.")
         return None
-
-
-
 def crear_interaccion():
     print("\n=== CREAR NUEVA INTERACCIÓN ===")
 
@@ -306,4 +303,3 @@ def contar_interacciones_activas(interacciones, i=0):
         return contar_interacciones_activas(interacciones, i + 1)
 
 
-       
